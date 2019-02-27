@@ -25,13 +25,15 @@
 var gulp = require("gulp");
 var del = require("del");
 var ts = require("gulp-typescript");
+require('source-map-support').install();
 
 gulp.task("build", function () {
     return gulp.src("src/**/*.ts")
         .pipe(ts({
-            noImplicitAny: true,
+            noImplicitAny: false,
             target: "es6",
             module: "commonjs",
+            sourceMap: true,
 
         })).pipe(gulp.dest("dist"));
 });

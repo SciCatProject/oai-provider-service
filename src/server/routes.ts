@@ -25,10 +25,18 @@
 import { Application } from 'express';
 import * as tagger from "../providers/controllers/tagger";
 import * as sample from "../providers/controllers/sample";
+import * as scicat from "../providers/controllers/scicat";
 import logger from "./logger";
+import * as bodyParser from "body-parser";
 
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
-  app.get('/tagger/oai', tagger.oai);
-  app.get('/sample/oai', sample.oai);
+  // already defined in server
+  //app.use(bodyParser.urlencoded({ extended: true }))
+  //app.get('/tagger/oai', tagger.oai);
+  //app.get('/sample/oai', sample.oai);
+  //console.log()
+  //app.get('/scicat/oai', scicat.oai);
+  app.post('/scicat/publications', scicat.publications);
+  logger.warn('--------------xxxxxxxxxxxxxx---------------------------');
 };

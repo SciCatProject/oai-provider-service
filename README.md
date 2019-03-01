@@ -1,5 +1,7 @@
 # OAI-PMH Service
 
+Credit upstream author hatfieldlibrary/oai-provider-service.
+
 OAI-PMH Service is a Nodejs Express application that supports multiple, configurable [OAI-PMH version 2.0](https://www.openarchives.org/OAI/openarchivesprotocol.html) data providers.
 
 OAI-PMH Service borrows from the [Modular OAI-PMH Server](https://github.com/NatLibFi/oai-pmh-server), University of Helsinki, 

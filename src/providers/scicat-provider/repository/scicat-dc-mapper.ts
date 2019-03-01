@@ -49,14 +49,14 @@ export class ScicatDcMapper implements ProviderDCMapper {
 
     private createItemRecord(record: any): any {
 
-        const updatedAt: string = this.setTimeZoneOffset(record);
+        //const updatedAt: string = this.setTimeZoneOffset(record);
         let item =
             {
                 record: [
                     {
                         'header': [
-                            {'identifier': record.id.toString()},
-                            {'datestamp': updatedAt}
+                            {'identifier': record._id.toString()},
+                            {'datestamp': "updatedAt"}
                         ]
                     },
                     {
@@ -72,11 +72,13 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                             'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
                                         }
                                 },
+                                    // ......does it matter what these fields are called?
                                     {'dc:title': record.title},
-                                    {'dc:description': {_cdata: record.description}},
+                                    {'dc:description': {_cdata: record.dataDescription}},
                                     {'dc:identifier': record.url},
-                                    {'dc:source': record.category},
-                                    {'dc:rights': this.getRightsMessage(record.restricted)}]
+                                    {'dc:source': record.dataDescription}, //category?/ source?
+                                    {'dc:rights': this.getRightsMessage(false)}] //rights?
+                                    // .....add more fields here
                             }]
                     }]
             };
@@ -104,7 +106,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
     }
 
     public mapOaiDcGetRecord(records: any): any {
-
+        console.log("___________mapOaiDcGetRecord");
         const record = records.pop();
 
         if (!record) {

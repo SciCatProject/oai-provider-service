@@ -199,37 +199,4 @@ export class MysqlConnector {
     });
   }
 
-  /**
-   * Responds to OAI PutRecord requests.
-   * @param parameters
-   * @returns {Promise<any>}
-   */
-  public putRecord(parameters: any): Promise<any> {
-    logger.debug(parameters);
-
-    return new Promise((resolve: any, reject: any) => {
-      const query = "";/*
-        "Select c.updatedAt, c.title, c.description, c.url, c.id, c.restricted, " +
-        "cr.title AS category FROM Collections c JOIN CategoryTargets ct on ct.CollectionId=c.id " +
-        "JOIN Categories cr on ct.CategoryId=cr.id WHERE c.id=" +
-        this.pool.escape(parameters.identifier) +
-        " AND c.published = true";*/
-
-      logger.debug(query);
-
-      this.pool.getConnection((err, connection) => {
-        if (err) {
-          return reject(err);
-        }
-        connection.query(query, (err: Error, rows: any[]) => {
-          if (err) {
-            logger.debug(err);
-            return reject(err);
-          }
-          resolve(rows);
-          connection.release();
-        });
-      });
-    });
-  }
 }

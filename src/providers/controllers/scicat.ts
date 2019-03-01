@@ -122,6 +122,7 @@ export let oai = (req: Request, res: Response) => {
             break;
 
         case 'GetRecord':
+        console.log("_________get record")
             logger.debug('GetRecord request.');
             provider.getRecord(req.query)
                 .then((response) => {
@@ -144,55 +145,28 @@ export let oai = (req: Request, res: Response) => {
 };
 
 
-export let publications = (req: Request, res: Response) => {
+export let publication = (req: Request, res: Response) => {
 
     res.set('Content-Type', 'text/xml');
     
-    console.log('req.query.verb: ', req.query);
+    //console.log('req.query.verb: ', req.query);
     //const provider2 = new CoreOaiProvider(factory, null, null);
     let db = null;
-    const parameters = req;
-    console.log('parameters: ', parameters);
+    //const parameters = req;
+    //console.log('parameters: ', parameters);
     MongoClient.connect("mongodb://localhost:27017", (err, client) => {
         if (err) return console.log(err);
         db = client.db("aoi-publications");
         //console.log('____________db: ', db);
-        db.collection("quotes").save(req.body, (err, result) => {
+        db.collection("Publication").save(req.body, (err, result) => {
             if (err) return console.log(err);
 
             console.log("saved to database");
-            parameters.res.redirect("/");
+            res.redirect("/");
         });
     });
     
-    
+//    res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
 
-    //return null;
-
-
-
-    switch (req.query.verb) {
-        
-
-        case 'post':
-            console.log('//////////////////////////////////////////');
-            logger.debug('Identify request.');
-            provider.identify(req.query)
-                .then((response) => {
-                    res.send(response);
-                })
-                .catch((oaiError) => {
-                    res.status(500);
-                    res.send(oaiError);
-                });
-
-            break;
-
-        default:
-            const exception: ExceptionParams = {
-                baseUrl: req.protocol + '://' + req.get('host') + req.path
-            };
-            res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
-    }
 
 };

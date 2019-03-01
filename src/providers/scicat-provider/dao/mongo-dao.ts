@@ -50,7 +50,18 @@ export class MongoConnector {
    * @returns {Promise<any>}
    */
   public recordsQuery(parameters: any): Promise<any> {
-    return null;
+    let Publication = this.db.collection("Publication");
+    //console.log("-----XgetRecord", Publication);
+    return new Promise((resolve: any, reject: any) => {
+      Publication.find().toArray(function(err, items) {
+        if (err) {
+          reject(err);
+        } else {
+          console.log(items);
+          resolve(items);
+        }
+      });
+    });
   }
 
   /**
@@ -71,18 +82,17 @@ export class MongoConnector {
     return null;
   }
 
-  /**
-   * Responds to OAI PutRecord requests.
-   * @param parameters
-   * @returns {Promise<any>}
-   */
-  public putRecord(parameters: any): Promise<any> {
-    this.db.collection("quotes").save(parameters.req.body, (err, result) => {
-      if (err) return console.log(err);
-
-      console.log("saved to database");
-      parameters.res.redirect("/");
+  private aggregatePublicationQuery(pipeline: any): Promise<any> {
+    var collection = this.db.collection("Publication");
+    var resolve = null;
+    return new Promise((resolve: any, err: any) => {
+      var resolve = collection.aggregate(pipeline, function(err, cursor) {
+        cursor.toArray(function(err, resolve) {
+          if (err) {
+            console.log("recordsQuery error:", err);
+          }
+        });
+      });
     });
-    return null;
   }
 }

@@ -113,7 +113,6 @@ export function factory(options = {}): DataRepository {
          * @returns {Promise<any>} an array of {@link record}
          */
         getRecords: (parameters: any) => {
-            console.log("_____deep get record")
             return dao.recordsQuery(parameters);
 
         }

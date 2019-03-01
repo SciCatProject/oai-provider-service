@@ -247,8 +247,6 @@ export class CoreOaiProvider {
     getRecord(query: RecordParamters): Promise<string> {
 
         logger.debug('GetRecord');
-        console.log("...getrecord core")
-
         return new Promise((resolve: any, reject: any) => {
             const queryParameters = this.getQueryParameters(query);
             const exception: ExceptionParams = {
@@ -266,7 +264,6 @@ export class CoreOaiProvider {
                
                 this.oaiService.getProvider().getRecord(query)
                     .then((record: any) => {
-                        console.log("x...getrecord core: ", record.length);
                         try {
                             
                             if (record.length === 1) {
@@ -388,7 +385,6 @@ export class CoreOaiProvider {
                 // Execute the request.
                 this.oaiService.getProvider().getRecords(query)
                     .then((result: any) => {
-                        console.log("x...getRecords core: ");
                         if (result.length === 0) {
                             resolve(generateException(exception, EXCEPTION_CODES.NO_RECORDS_MATCH));
 

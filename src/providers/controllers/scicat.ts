@@ -51,8 +51,6 @@ const provider = new CoreOaiProvider(factory, new Configuration(), new ScicatDcM
  * @param {Response} res
  */
 export let oai = (req: Request, res: Response) => {
-    console.log('req.query.verb: ', req.query);
-
     res.set('Content-Type', 'text/xml');
 
     switch (req.query.verb) {
@@ -122,7 +120,6 @@ export let oai = (req: Request, res: Response) => {
             break;
 
         case 'GetRecord':
-        console.log("_________get record")
             logger.debug('GetRecord request.');
             provider.getRecord(req.query)
                 .then((response) => {
@@ -147,21 +144,14 @@ export let oai = (req: Request, res: Response) => {
 
 export let publication = (req: Request, res: Response) => {
 
-    res.set('Content-Type', 'text/xml');
-    
-    //console.log('req.query.verb: ', req.query);
-    //const provider2 = new CoreOaiProvider(factory, null, null);
+    //res.set('Content-Type', 'text/xml');
     let db = null;
-    //const parameters = req;
-    //console.log('parameters: ', parameters);
     MongoClient.connect("mongodb://localhost:27017", (err, client) => {
-        if (err) return console.log(err);
+        if (err) return logger.console.error(err);
         db = client.db("aoi-publications");
-        //console.log('____________db: ', db);
         db.collection("Publication").save(req.body, (err, result) => {
-            if (err) return console.log(err);
-
-            console.log("saved to database");
+            if (err) return logger.error(err);
+            logger.debug("saved to database");
             res.redirect("/");
         });
     });

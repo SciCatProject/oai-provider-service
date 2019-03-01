@@ -1,5 +1,6 @@
 import logger from "../../../server/logger";
 import { getCredentials, hasCredentialsFile } from "../../core/credentials";
+import { reject } from "bluebird";
 
 //const express = require('express')
 //const app = express()
@@ -12,7 +13,6 @@ const MongoClient = require("mongodb").MongoClient;
  * provided by the credentials file (path defined in .env).
  */
 export class MongoConnector {
-  //private pool: Pool;
   public static instance: MongoConnector;
   public db: null;
 
@@ -20,14 +20,18 @@ export class MongoConnector {
     logger.debug("Setting up the mongo connection.");
 
     // Get path from the environment.
-    const credFile = process.env.TAGGER_CONFIGURATION;
+    const credFile = process.env.SCICAT_CONFIGURATION;
 
     /*if (hasCredentialsFile(credFile)) {
       const creds = getCredentials(credFile);
     }*/
+    const url = "mongodb://localhost:27017";
 
     MongoClient.connect("mongodb://localhost:27017", (err, client) => {
-      if (err) return console.log(err);
+      if (err) {
+        logger.error("failed to connect", err);
+        this.db = null;
+      }
       this.db = client.db("aoi-publications");
     });
   }
@@ -50,14 +54,15 @@ export class MongoConnector {
    * @returns {Promise<any>}
    */
   public recordsQuery(parameters: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
     let Publication = this.db.collection("Publication");
-    //console.log("-----XgetRecord", Publication);
     return new Promise((resolve: any, reject: any) => {
       Publication.find().toArray(function(err, items) {
         if (err) {
           reject(err);
         } else {
-          console.log(items);
           resolve(items);
         }
       });
@@ -83,13 +88,16 @@ export class MongoConnector {
   }
 
   private aggregatePublicationQuery(pipeline: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
     var collection = this.db.collection("Publication");
     var resolve = null;
     return new Promise((resolve: any, err: any) => {
       var resolve = collection.aggregate(pipeline, function(err, cursor) {
         cursor.toArray(function(err, resolve) {
           if (err) {
-            console.log("recordsQuery error:", err);
+            logger.error("recordsQuery error:", err);
           }
         });
       });

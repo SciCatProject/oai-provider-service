@@ -106,7 +106,6 @@ export class ScicatDcMapper implements ProviderDCMapper {
     }
 
     public mapOaiDcGetRecord(records: any): any {
-        console.log("___________mapOaiDcGetRecord");
         const record = records.pop();
 
         if (!record) {

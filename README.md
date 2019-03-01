@@ -4,9 +4,7 @@ OAI-PMH Service is a Nodejs Express application that supports multiple, configur
 
 OAI-PMH Service borrows from the [Modular OAI-PMH Server](https://github.com/NatLibFi/oai-pmh-server), University of Helsinki, 
 The National Library of Finland. 
-
-This project includes a provider module for one of our local services `(tagger-provider)`. The project
- includes a second, very simple module with dummy data `(sample-provider)`.  
+ 
 
 ## Dependenices
 
@@ -16,12 +14,8 @@ This project includes a provider module for one of our local services `(tagger-p
 
 ## Capabilities
 
-The `tagger-provider` repository module implements a data access object (DAO) with support for querying the 
-[Tagger-2](https://github.com/hatfieldlibrary/tagger-2) MySQL database.  The Tagger-2 provider supports `Identify`, `ListMetadataFormats`, `GetRecord`, `ListIdentifiers` and `ListRecords`. The optional
+Supports `Identify`, `ListMetadataFormats`, `GetRecord`, `ListIdentifiers` and `ListRecords`. The optional
 `from` and `until` arguments are supported for selective harvesting with `YYYY-MM-DDThh:mm:ssZ` granularity.  `ListSets` is not supported.  
-
-The `sample-provider` module implements a DAO that returns dummy data. The `sample-provider` repository modules use this DAO to implement mock OAI-PMH services that are similar to`tagger-provider` -- minus the option of selective harvesting.  The main purpose of `sample-provider` is to verify that the OAI-PMH Service can offer multiple providers via different Express routes.  The sample repository can also be used as the template for implementing a another, 
- new OAI-PHM provider with real data.
 
 ## Install It
 ```
@@ -37,14 +31,20 @@ npm run dev
 
 #### Routes:
 
-The Express server will start on default port 3000.  You should be able to access the sample repository 
-using these links.
+The Express server will start on default port 3000.  
 
-* [`http://localhost:3000/sample/oai?verb=Identify`](http://localhost:3000/sample/oai?verb=Identify)
-* [`http://localhost:3000/sample/oai?verb=ListMetadataFormats`](http://localhost:3000/sample/oai?verb=ListMetadataFormats)
-* [`http://localhost:3000/sample/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc`](http://localhost:3000/sample/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc)
-* [`http://localhost/3000/sample/oai?verb=ListIdentifiers&metadataPrefix=oai_dc`](http://localhost/3000/tagger/oai?verb=ListIdentifiers&metadataPrefix=oai_dc)
-* [`http://localhost:3000/sample/oai?verb=ListRecords&metadataPrefix=oai_dc`](http://localhost:3000/sample/oai?verb=ListRecords&metadataPrefix=oai_dc)
+* [`http://localhost:3000/scicat/oai?verb=Identify`](http://localhost:3000/scicat/oai?verb=Identify)
+* [`http://localhost:3000/scicat/oai?verb=ListMetadataFormats`](http://localhost:3000/scicat/oai?verb=ListMetadataFormats)
+* [`http://localhost:3000/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc`](http://localhost:3000/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc)
+* [`http://localhost/3000/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc`](http://localhost/3000/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc)
+* [`http://localhost:3000/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc`](http://localhost:3000/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc)
+
+### Add Records:
+
+Add new records to your mongodb instance using the folling route:
+
+* [`http://localhost:3000/scicat/Publication`](http://localhost:3000/scicat/Publication)
+
 
 #### Server Configuration
 

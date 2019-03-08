@@ -105,15 +105,13 @@ export class ScicatDcMapper implements ProviderDCMapper {
 
     }
 
-    public mapOaiDcGetRecord(records: any): any {
-        const record = records.pop();
-
+    public mapOaiDcGetRecord(record: any): any {
         if (!record) {
             throw new Error("Record not found");
         }
 
         let item = this.createItemRecord(record);
-        logger.debug('Got item with id ' + record.id + ", title: " + record.title);
+        logger.debug('Got item with id ' + record._id + ", title: " + record.title);
         return item;
 
     }

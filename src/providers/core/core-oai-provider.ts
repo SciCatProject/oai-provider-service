@@ -266,7 +266,7 @@ export class CoreOaiProvider {
                     .then((record: any) => {
                         try {
                             
-                            if (record.length === 1) {
+                            if (record) {
                                 const mapped = this.mapper.mapOaiDcGetRecord(record);
                                 resolve(generateResponse(<any>query, this.parameters.baseURL, mapped))
                             } else {

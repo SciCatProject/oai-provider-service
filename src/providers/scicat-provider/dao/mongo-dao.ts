@@ -1,11 +1,7 @@
 import logger from "../../../server/logger";
 import { getCredentials, hasCredentialsFile } from "../../core/credentials";
 import { reject } from "bluebird";
-
-//const express = require('express')
-//const app = express()
-//const bodyParser = require('body-parser')
-const MongoClient = require("mongodb").MongoClient;
+import { MongoClient } from "mongodb";
 
 /**
  * This is the DAO service for Scicat. It uses a mongo connection
@@ -75,7 +71,20 @@ export class MongoConnector {
    * @returns {Promise<any>}
    */
   public identifiersQuery(parameters: any): Promise<any> {
-    return null;
+    if (!this.db) {
+      reject("no db connection");
+    }
+    let Publication = this.db.collection("Publication");
+    return new Promise((resolve: any, reject: any) => {
+      // need to add relevant date to projection
+      Publication.find({},{_id: 1 }).toArray(function(err, items) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(items);
+        }
+      });
+    });
   }
 
   /**
@@ -84,7 +93,22 @@ export class MongoConnector {
    * @returns {Promise<any>}
    */
   public getRecord(parameters: any): Promise<any> {
-    return null;
+    if (!this.db) {
+      reject("no db connection");
+    }
+    let Publication = this.db.collection("Publication");
+    return new Promise((resolve: any, reject: any) => {
+      const query = {
+        _id: parameters.identifier
+      };
+      Publication.findOne(query, {}, function(err, item) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(item);
+        }
+      });
+    });
   }
 
   private aggregatePublicationQuery(pipeline: any): Promise<any> {

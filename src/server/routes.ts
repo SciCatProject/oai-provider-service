@@ -29,5 +29,5 @@ import logger from "./logger";
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
   app.get('/scicat/oai', scicat.oai);
-  app.post('/scicat/Publication', scicat.publication);
+  app.put('/scicat/Publication', scicat.publication);
 };

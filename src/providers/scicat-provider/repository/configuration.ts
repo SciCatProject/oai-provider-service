@@ -26,7 +26,7 @@ import {DELETED_RECORDS_SUPPORT, HARVESTING_GRANULARITY} from "../../core/core-o
 import {ProviderConfiguration} from "../../core/oai-service";
 
 /**
- * Sample provider module configuration.
+ * module configuration.
  */
 export class Configuration implements ProviderConfiguration {
 

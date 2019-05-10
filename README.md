@@ -24,6 +24,10 @@ Supports `Identify`, `ListMetadataFormats`, `GetRecord`, `ListIdentifiers` and `
 npm install
 ```
 
+## Configure It
+
+The service uses dotenv to import variables into the environment and from the top level .env file (in the production dir), a variable HOST_CONFIGURATION is defined which points to a JSON file, defining port and host for the service itself. If multiple providers are desired, then the definition of HOST_CONFIGURATION should be moved to the provider level. At this time, we do not require multiple providers.
+
 ## Run It
 #### Run in *development* mode:
 

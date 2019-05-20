@@ -11,7 +11,7 @@ node('docker') {
     }
   }
   stage('Production Build'){
-      if (env.BRANCH_NAME == 'develop'){
+      if (env.BRANCH_NAME == 'master'){
             def IMAGE_ID = sh ( script: 'git rev-parse HEAD',returnStdout: true).trim()
       sh "docker build --file CI/ESS/Dockerfile.proxy . --tag dacat/oai-provider-service:latest -t dacat/oai-provider-service:${IMAGE_ID}dev" 
       echo "Git image id : ${IMAGE_ID}"

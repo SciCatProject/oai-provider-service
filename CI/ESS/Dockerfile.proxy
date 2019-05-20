@@ -6,11 +6,11 @@ ENV https_proxy $http_proxy
 ENV no_proxy "localhost, 127.0.0.1"
 
 EXPOSE 3005
-WORKDIR /
+WORKDIR /usr/src/app/
 
-COPY package.json /
+COPY package.json /usr/src/app/
+RUN npm install
+RUN npm run compile
 ENV NODE_ENV=production
 RUN npm prune
-COPY ./dist /
-COPY ./node_modules /node_modules
 CMD ["node", "index.js"]

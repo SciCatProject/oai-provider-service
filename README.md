@@ -47,7 +47,7 @@ The Express server will start on default port 3000.
 
 ### PUT Records:
 
-Add new records to your mongodb instance by HTTP PUT using the folling route:
+Add new records to your mongodb instance by HTTP PUT using the following route:
 
 * `http://localhost:3000/scicat/Publication`
 

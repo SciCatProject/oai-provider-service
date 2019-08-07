@@ -1,6 +1,5 @@
 /*
- *  Original work Copyright 2018 Willamette University 
- *  Modified work Copyright 2019 SciCat Organisations
+ *  Copyright 2018 Willamette University
  *
  *  This file is part of OAI-PHM Service.
  *
@@ -32,10 +31,10 @@ import {ProviderConfiguration} from "../../core/oai-service";
 export class Configuration implements ProviderConfiguration {
 
     public repositoryName: string = "Scicat Provider";
-    public baseURL: string =  "http://localhost:3000/scicat/oai";
+    public baseURL: string =  "doi.psi.ch";
     public protocolVersion: string = '2.0';
     public adminEmail: string = "luke.gorman@psi.ch";
-    public port: number = 3000;
+    public port: number = 0;
     public description: string = "";
     public deletedRecord: string = DELETED_RECORDS_SUPPORT.NO;
     public granularity: string = HARVESTING_GRANULARITY.DATETIME;

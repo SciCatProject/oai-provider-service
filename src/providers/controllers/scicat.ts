@@ -1,19 +1,26 @@
-import {Request, Response} from "express";
-import {CoreOaiProvider, EXCEPTION_CODES, ExceptionParams} from "../core/core-oai-provider";
-import {generateException} from "../core/oai-response";
+import { Request, Response } from "express";
+import {
+  CoreOaiProvider,
+  EXCEPTION_CODES,
+  ExceptionParams
+} from "../core/core-oai-provider";
+import { generateException } from "../core/oai-response";
 import logger from "../../server/logger";
-import {factory} from "../scicat-provider/repository/scicat-data-repository";
-import {Configuration} from "../scicat-provider/repository/configuration";
+import { factory } from "../scicat-provider/repository/scicat-data-repository";
+import { Configuration } from "../scicat-provider/repository/configuration";
 import { ScicatDcMapper } from "../scicat-provider/repository/scicat-dc-mapper";
-const MongoClient = require("mongodb").MongoClient;
-
+import { MongoConnector } from "../scicat-provider/dao/mongo-dao"; // only for put method
 
 /**
  * This is a CoreOaiProvider instance configured for the sample repository module.
  * Module configuration is provided via constructor parameters.
  * @type {CoreOaiProvider}
  */
-const provider = new CoreOaiProvider(factory, new Configuration(), new ScicatDcMapper());
+const provider = new CoreOaiProvider(
+  factory,
+  new Configuration(),
+  new ScicatDcMapper()
+);
 
 /**
  * This controller handles all OAI requests to the sample module.
@@ -27,112 +34,109 @@ const provider = new CoreOaiProvider(factory, new Configuration(), new ScicatDcM
  * @param {Response} res
  */
 export let oai = (req: Request, res: Response) => {
-    res.set('Content-Type', 'text/xml');
+  res.set("Content-Type", "text/xml");
 
-    switch (req.query.verb) {
+  switch (req.query.verb) {
+    case "Identify":
+      logger.debug("Identify request.");
+      provider
+        .identify(req.query)
+        .then(response => {
+          res.send(response);
+        })
+        .catch(oaiError => {
+          res.status(500);
+          res.send(oaiError);
+        });
 
-        case 'Identify':
-            logger.debug('Identify request.');
-            provider.identify(req.query)
-                .then((response) => {
-                    res.send(response);
-                })
-                .catch((oaiError) => {
-                    res.status(500);
-                    res.send(oaiError);
-                });
+      break;
 
-            break;
+    case "ListMetadataFormats":
+      logger.debug("ListMetadataFormats request.");
+      provider
+        .listMetadataFormats(req.query)
+        .then(response => {
+          res.send(response);
+        })
+        .catch(oaiError => {
+          res.status(500);
+          res.send(oaiError);
+        });
 
-        case 'ListMetadataFormats':
-            logger.debug('ListMetadataFormats request.');
-            provider.listMetadataFormats(req.query)
-                .then((response) => {
-                    res.send(response);
-                })
-                .catch((oaiError) => {
-                    res.status(500);
-                    res.send(oaiError);
-                });
+      break;
 
-            break;
+    case "ListIdentifiers":
+      logger.debug("ListIdentifiers request.");
+      provider
+        .listIdentifiers(req.query)
+        .then(response => {
+          res.send(response);
+        })
+        .catch(oaiError => {
+          res.status(500);
+          res.send(oaiError);
+        });
 
-        case 'ListIdentifiers':
-            logger.debug('ListIdentifiers request.');
-            provider.listIdentifiers(req.query)
-                .then((response) => {
-                    res.send(response)
-                })
-                .catch((oaiError) => {
-                    res.status(500);
-                    res.send(oaiError)
-                });
+      break;
 
-            break;
+    case "ListRecords":
+      logger.debug("ListRecords request.");
+      provider
+        .listRecords(req.query)
+        .then(response => {
+          res.send(response);
+        })
+        .catch(oaiError => {
+          res.status(500);
+          res.send(oaiError);
+        });
 
-        case 'ListRecords':
-            logger.debug('ListRecords request.');
-            provider.listRecords(req.query)
-                .then((response) => {
-                    res.send(response)
-                })
-                .catch((oaiError) => {
-                    res.status(500);
-                    res.send(oaiError)
-                });
+      break;
 
-            break;
+    case "ListSets":
+      logger.debug("ListSet request.");
+      provider
+        .listSets(req.query)
+        .then(response => {
+          res.send(response);
+        })
+        .catch(oaiError => {
+          res.status(500);
+          res.send(oaiError);
+        });
+      break;
 
-        case 'ListSets':
-            logger.debug('ListSet request.');
-            provider.listSets(req.query)
-                .then((response) => {
-                    res.send(response)
-                })
-                .catch((oaiError) => {
-                    res.status(500);
-                    res.send(oaiError)
-                });
-            break;
+    case "GetRecord":
+      logger.debug("GetRecord request.");
+      provider
+        .getRecord(req.query)
+        .then(response => {
+          res.send(response);
+        })
+        .catch(oaiError => {
+          res.status(500);
+          res.send(oaiError);
+        });
 
-        case 'GetRecord':
-            logger.debug('GetRecord request.');
-            provider.getRecord(req.query)
-                .then((response) => {
-                    res.send(response)
-                })
-                .catch((oaiError) => {
-                    res.status(500);
-                    res.send(oaiError)
-                });
+      break;
 
-            break;
-
-        default:
-            const exception: ExceptionParams = {
-                baseUrl: req.protocol + '://' + req.get('host') +  req.path
-            };
-            res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
-    }
-
+    default:
+      const exception: ExceptionParams = {
+        baseUrl: req.protocol + "://" + req.get("host") + req.path
+      };
+      res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
+  }
 };
 
-
 export let publication = (req: Request, res: Response) => {
-
-    //res.set('Content-Type', 'text/xml');
-    let db = null;
-    MongoClient.connect("mongodb://localhost:27017", (err, client) => {
-        if (err) return logger.console.error(err);
-        db = client.db("aoi-publications");
-        db.collection("Publication").save(req.body, (err, result) => {
-            if (err) return logger.error(err);
-            logger.debug("saved to database");
-            res.redirect("/");
-        });
+  const dao = MongoConnector.getInstance();
+  dao
+    .publication(req.query)
+    .then(response => {
+      res.send(response);
+    })
+    .catch(oaiError => {
+      res.status(500);
+      res.send(oaiError);
     });
-    
-//    res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
-
-
 };

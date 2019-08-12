@@ -18,4 +18,5 @@ RUN npm install
 RUN npm run compile
 ENV NODE_ENV=production
 RUN npm prune
+WORKDIR /usr/src/app/dist/
 CMD ["node", "index.js"]

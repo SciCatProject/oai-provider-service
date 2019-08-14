@@ -9,12 +9,14 @@ EXPOSE 3005
 WORKDIR /usr/src/app/
 
 COPY package.json /usr/src/app/
-COPY . /usr/src/app/
+COPY . c/usr/src/app/
 RUN npm config set proxy  $http_proxy
 RUN npm config set https-proxy  $http_proxy
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false
 RUN npm install
+COPY CI/ESS/mongo-dao.ts /usr/src/app/src/providers/scicat-provider/dao/mongo-dao.ts
+COPY CI/ESS/configuration.ts /usr/src/app/src/providers/scicat-provider/repository/mongo-dao.ts
 RUN npm run compile
 ENV NODE_ENV=production
 RUN npm prune

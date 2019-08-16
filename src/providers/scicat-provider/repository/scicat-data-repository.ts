@@ -51,6 +51,13 @@ import {MongoConnector} from "../dao/mongo-dao";
  * @param {Object} [options={}] - Implementation-specific configuration
  * @returns {DataRepository}
  */
+
+export enum METADATA_FORMAT_PANOSC {
+    prefix = 'panosc',
+    schema = 'http://scicat.esss.se/panosc.xsd',
+    namespace = 'http://scicat.esss.se/panosc'
+}
+
 export function factory(options = {}): DataRepository {
 
     const dao: MongoConnector = MongoConnector.getInstance();
@@ -82,9 +89,11 @@ export function factory(options = {}): DataRepository {
          * @param {string} identifier (not used)
          * @returns {Promise<METADATA_FORMAT_DC[]>}
          */
+
+        
         getMetadataFormats: (identifier: string = undefined) => {
             // Since only DC is supported, safe to ignore the identifier param.
-            return Promise.resolve([METADATA_FORMAT_DC]);
+            return Promise.resolve([METADATA_FORMAT_DC, METADATA_FORMAT_PANOSC]);
         },
 
         /**

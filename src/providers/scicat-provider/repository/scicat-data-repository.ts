@@ -2,10 +2,10 @@
  *  Copyright 2018 Willamette University
  *
  *  This file is part of OAI-PHM Service.
- *  
+ *
  *  @author Michael Spalti
  *
- *  OAI-PHM Service is based on the Modular OAI-PMH Server, University of Helsinki, 
+ *  OAI-PHM Service is based on the Modular OAI-PMH Server, University of Helsinki,
  *  The National Library of Finland.
  *
  *  OAI-PHM Service is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
  *  (at your option) any later version.
  *
  *  OAI-PHM Service is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
@@ -41,10 +41,13 @@
  * @property {string} searchUrl
  */
 
-
-import { DataRepository, ERRORS, METADATA_FORMAT_DC } from "../../core/core-oai-provider";
+import {
+  DataRepository,
+  ERRORS,
+  METADATA_FORMAT_DC
+} from "../../core/core-oai-provider";
 import logger from "../../../server/logger";
-import {MongoConnector} from "../dao/mongo-dao";
+import { MongoConnector } from "../dao/mongo-dao";
 
 /**
  * Factory function to create the oai provider
@@ -53,78 +56,74 @@ import {MongoConnector} from "../dao/mongo-dao";
  */
 
 export enum METADATA_FORMAT_PANOSC {
-    prefix = 'panosc',
-    schema = 'http://scicat.esss.se/panosc.xsd',
-    namespace = 'http://scicat.esss.se/panosc'
+  prefix = "panosc",
+  schema = "https://github.com/panosc-eu/fair-data-api/blob/master/panosc.xsd",
+  namespace = "http://scicat.esss.se/panosc"
 }
 
 export function factory(options = {}): DataRepository {
+  const dao: MongoConnector = MongoConnector.getInstance();
 
-    const dao: MongoConnector = MongoConnector.getInstance();
+  return Object.freeze({
+    /**
+     * Defines whether this repository supports sets.
+     */
+    setSupport: false,
 
-    
-    return Object.freeze({
+    /**
+     * Defines whether this repository supports resumption tokens.
+     */
+    resumptionSupport: false,
 
-        /**
-         * Defines whether this repository supports sets.
-         */
-        setSupport: false,
+    /**
+     * Get individual record.
+     * @param parameters (identifier, metadataPrefix)
+     * @returns {Promise<any>} Resolves with a {@link record}
+     */
+    getRecord: (parameters: any) => {
+      return dao.getRecord(parameters);
+    },
 
-        /**
-         * Defines whether this repository supports resumption tokens.
-         */
-        resumptionSupport: false,
+    /**
+     * Returns the metadata formats supported by this repository (DC only)
+     * @param {string} identifier (not used)
+     * @returns {Promise<METADATA_FORMAT_DC[]>}
+     */
 
-        /**
-         * Get individual record.
-         * @param parameters (identifier, metadataPrefix)
-         * @returns {Promise<any>} Resolves with a {@link record}
-         */
-        getRecord: (parameters: any) => {
-            return dao.getRecord(parameters);
-        },
+    getMetadataFormats: (identifier: string = undefined) => {
+      // Since only DC is supported, safe to ignore the identifier param.
+      return Promise.resolve([METADATA_FORMAT_DC, METADATA_FORMAT_PANOSC]);
+    },
 
-        /**
-         * Returns the metadata formats supported by this repository (DC only)
-         * @param {string} identifier (not used)
-         * @returns {Promise<METADATA_FORMAT_DC[]>}
-         */
+    /**
+     * Used to retrieve the set structure of a repository. Not supported currently.
+     * @param {string} resumptionToken
+     * @returns {Promise<never>}
+     */
+    getSets: (resumptionToken: string = undefined) => {
+      return Promise.reject(
+        resumptionToken ? ERRORS.badResumptionToken : ERRORS.noSetHierarchy
+      );
+    },
 
-        
-        getMetadataFormats: (identifier: string = undefined) => {
-            // Since only DC is supported, safe to ignore the identifier param.
-            return Promise.resolve([METADATA_FORMAT_DC, METADATA_FORMAT_PANOSC]);
-        },
+    /**
+     * Gets list of identifiers.
+     * @param parameters (metadataPrefix, from (optional), until (optional), set (not supported),
+     *        resumptionToken (not supported))
+     * @returns {Promise<any>} an array of {@link record}
+     */
+    getIdentifiers: (parameters: any) => {
+      return dao.identifiersQuery(parameters);
+    },
 
-        /**
-         * Used to retrieve the set structure of a repository. Not supported currently.
-         * @param {string} resumptionToken
-         * @returns {Promise<never>}
-         */
-        getSets: (resumptionToken: string = undefined) => {
-            return Promise.reject(resumptionToken ? ERRORS.badResumptionToken : ERRORS.noSetHierarchy);
-        },
-
-        /**
-         * Gets list of identifiers.
-         * @param parameters (metadataPrefix, from (optional), until (optional), set (not supported),
-         *        resumptionToken (not supported))
-         * @returns {Promise<any>} an array of {@link record}
-         */
-        getIdentifiers: (parameters: any) => {
-            return dao.identifiersQuery(parameters);
-        },
-
-        /**
-         * Gets list of records
-         * @param parameters (metadataPrefix, from (optional), until (optional), set (not supported),
-         *        resumptionToken (not supported))
-         * @returns {Promise<any>} an array of {@link record}
-         */
-        getRecords: (parameters: any) => {
-            return dao.recordsQuery(parameters);
-
-        }
-
-    });
+    /**
+     * Gets list of records
+     * @param parameters (metadataPrefix, from (optional), until (optional), set (not supported),
+     *        resumptionToken (not supported))
+     * @returns {Promise<any>} an array of {@link record}
+     */
+    getRecords: (parameters: any) => {
+      return dao.recordsQuery(parameters);
+    }
+  });
 }

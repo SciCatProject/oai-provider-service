@@ -38,7 +38,7 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
                     {
                         'metadata': [
                             {
-                                'panosc:panosc': [{
+                                'panosc:panosctype': [{
                                     '_attr':
                                         {
                                             'xmlns:panosc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',

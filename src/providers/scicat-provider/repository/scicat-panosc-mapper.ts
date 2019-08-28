@@ -48,14 +48,21 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
                                             'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
                                         }
                                 },
-                                    // ......does it matter what these fields are called?
-                                    {'panosc:title': record.title},
+                                    {'panosc:id': record.url},
+                                    {'panosc:name': record.title},
                                     {'panosc:description':  record.dataDescription},
-                                    {'panosc:identifier': record.url},
-                                    {'panosc:creator': record.creator},
-                                    {'panosc:source': record.publisher}, //category?/ source?
-                                    {'panosc:rights': this.getRightsMessage(false)}] //rights?
-                                    // .....add more fields here
+                                    {'panosc:owner': record.creator},
+                                    {'panosc:contactEmail': record.creator},
+                                    {'panosc:orcidOfOwner': record.creator},
+                                    {'panosc:license': record.creator},
+                                    {'panosc:embargoEndDate': record.creator},
+                                    {'panosc:startDate': record.creator},
+                                    {'panosc:path': record.creator},
+                                    {'panosc:technique': record.creator},
+                                    {'panosc:sampleName': record.creator},
+                                    {'panosc:chemicalFormula': record.creator},
+                                    {'panosc:size': record.creator},
+                                    {'panosc:wavelength': record.creator},
                             }]
                     }]
             };

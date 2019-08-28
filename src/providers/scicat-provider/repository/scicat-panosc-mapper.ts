@@ -74,7 +74,7 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
             list.push(item);
         }
 
-        logger.debug('Parsed ' + list.length + " records into OAI xml format.");
+        logger.debug('Parsed ' + list.length + " records into panosc xml format.");
 
         response.ListRecords = list;
 

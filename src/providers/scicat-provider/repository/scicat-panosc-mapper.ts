@@ -62,7 +62,7 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
                                     {'panosc:sampleName': record.creator},
                                     {'panosc:chemicalFormula': record.creator},
                                     {'panosc:size': record.creator},
-                                    {'panosc:wavelength': record.creator},
+                                    {'panosc:wavelength': record.creator}]
                             }]
                     }]
             };

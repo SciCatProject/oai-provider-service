@@ -128,10 +128,10 @@ export let oai = (req: Request, res: Response) => {
   }
 };
 
-export let publication = (req: Request, res: Response) => {
+export let putPublication = (req: Request, res: Response) => {
   const dao = MongoConnector.getInstance();
   dao
-    .publication(req.query)
+    .putPublication(req.query)
     .then(response => {
       res.send(response);
     })
@@ -140,3 +140,19 @@ export let publication = (req: Request, res: Response) => {
       res.send(oaiError);
     });
 };
+
+// is commonly cross a cross origin request
+export let getPublication = (req: Request, res: Response) => {
+  logger.debug("Get publications request.");
+  const dao = MongoConnector.getInstance();
+  dao
+    .getPublication(req.query)
+    .then(response => {
+      res.jsonp(response);
+    })
+    .catch(oaiError => {
+      res.status(500);
+      res.jsonp(oaiError);
+    });
+};
+

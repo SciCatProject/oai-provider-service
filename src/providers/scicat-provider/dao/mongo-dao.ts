@@ -129,7 +129,7 @@ export class MongoConnector {
   }
 
 
-  public publication(parameters: any): Promise<any> {
+  public putPublication(parameters: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -147,4 +147,20 @@ export class MongoConnector {
       });
     });
   }
+
+public getPublication(parameters: any): Promise<any> {
+  if (!this.db) {
+    reject("no db connection");
+  }
+  let Publication = this.db.collection("Publication");
+  return new Promise((resolve: any, reject: any) => {
+    Publication.find().toArray(function(err, items) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(items);
+      }
+    });
+  });
+}
 }

@@ -29,7 +29,7 @@ export class MongoConnector {
         logger.error("failed to connect", err);
         this.db = null;
       }
-      this.db = client.db("aoi-publications");
+      this.db = client.db("dacat");
     });
   }
 

@@ -24,10 +24,12 @@
 
 import { Application } from 'express';
 import * as scicat from "../providers/controllers/scicat";
+import * as panosc from "../providers/controllers/panosc";
 import logger from "./logger";
 
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
   app.get('/scicat/oai', scicat.oai);
+  app.get('/panosc/oai', panosc.oai);
   app.put('/scicat/Publication', scicat.publication);
 };

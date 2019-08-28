@@ -116,23 +116,3 @@ export let oai = (req: Request, res: Response) => {
     }
 
 };
-
-
-export let publication = (req: Request, res: Response) => {
-
-    //res.set('Content-Type', 'text/xml');
-    let db = null;
-    MongoClient.connect("mongodb://localhost:27017", (err, client) => {
-        if (err) return logger.console.error(err);
-        db = client.db("aoi-publications");
-        db.collection("Publication").save(req.body, (err, result) => {
-            if (err) return logger.error(err);
-            logger.debug("saved to database");
-            res.redirect("/");
-        });
-    });
-    
-//    res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
-
-
-};

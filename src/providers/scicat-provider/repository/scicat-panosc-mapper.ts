@@ -48,21 +48,21 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
                                             'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
                                         }
                                 },
-                                    {'panosc:id': record.url},
+                                    {'panosc:id': record.doi},
                                     {'panosc:name': record.title},
                                     {'panosc:description':  record.dataDescription},
                                     {'panosc:owner': record.creator},
-                                    {'panosc:contactEmail': record.creator},
-                                    {'panosc:orcidOfOwner': record.creator},
-                                    {'panosc:license': record.creator},
-                                    {'panosc:embargoEndDate': record.creator},
-                                    {'panosc:startDate': record.creator},
-                                    {'panosc:path': record.creator},
-                                    {'panosc:technique': record.creator},
-                                    {'panosc:sampleName': record.creator},
-                                    {'panosc:chemicalFormula': record.creator},
-                                    {'panosc:size': record.creator},
-                                    {'panosc:wavelength': record.creator}]
+                                    {'panosc:contactEmail': record.contactEmail},
+                                    {'panosc:orcidOfOwner': record.orcidOfOwner},
+                                    {'panosc:license': record.license},
+                                    {'panosc:embargoEndDate': record.embargoEndDate},
+                                    {'panosc:startDate': record.startDate},
+                                    {'panosc:path': record.path},
+                                    {'panosc:technique': record.technique},
+                                    {'panosc:sampleName': record.sampleName},
+                                    {'panosc:chemicalFormula': record.chemicalFormula},
+                                    {'panosc:size': record.sizeOfArchive},
+                                    {'panosc:wavelength': record.wavelength}]
                             }]
                     }]
             };

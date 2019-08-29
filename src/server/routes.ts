@@ -25,6 +25,7 @@
 
 import { Application } from 'express';
 import * as scicat from "../providers/controllers/scicat";
+import * as panosc from "../providers/controllers/panosc";
 import logger from "./logger";
 var cors = require('cors')
 
@@ -33,4 +34,6 @@ export default function routes(app: Application): void {
   app.get('/scicat/oai', scicat.oai);
   app.put('/scicat/Publication', scicat.putPublication);
   app.get('/scicat/Publication'/*, cors()*/, scicat.getPublication);
+  app.get('/panosc/oai', panosc.oai);
+  app.put('/scicat/Publication', scicat.publication);
 };

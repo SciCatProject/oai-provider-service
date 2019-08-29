@@ -1,7 +1,7 @@
 import logger from "../../../server/logger";
 import {ProviderDCMapper} from "../../core/core-oai-provider";
 
-export class ScicatDcMapper implements ProviderDCMapper {
+export class ScicatPanoscMapper implements ProviderDCMapper {
 
     /**
      * The Universal Coordinated Time (UTC) date needs to be modifed
@@ -38,24 +38,31 @@ export class ScicatDcMapper implements ProviderDCMapper {
                     {
                         'metadata': [
                             {
-                                'oai_dc:dc': [{
+                                'panosc:panosctype': [{
                                     '_attr':
                                         {
-                                            'xmlns:oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+                                            'xmlns:panosc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
                                             'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
                                             'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
                                             'xsi:schemaLocation': 'http://www.openarchives.org/OAI/2.0/oai_dc/ ' +
-                                            'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
+                                            'https://raw.githubusercontent.com/panosc-eu/fair-data-api/master/panosc.xsd'
                                         }
                                 },
-                                    // ......does it matter what these fields are called?
-                                    {'dc:title': record.title},
-                                    {'dc:description':  record.dataDescription},
-                                    {'dc:identifier': record.url},
-                                    {'dc:creator': record.creator},
-                                    {'dc:source': record.publisher}, //category?/ source?
-                                    {'dc:rights': this.getRightsMessage(false)}] //rights?
-                                    // .....add more fields here
+                                    {'panosc:id': record.doi},
+                                    {'panosc:name': record.title},
+                                    {'panosc:description':  record.dataDescription},
+                                    {'panosc:owner': record.creator},
+                                    {'panosc:contactEmail': record.contactEmail},
+                                    {'panosc:orcidOfOwner': record.orcidOfOwner},
+                                    {'panosc:license': record.license},
+                                    {'panosc:embargoEndDate': record.embargoEndDate},
+                                    {'panosc:startDate': record.startDate},
+                                    {'panosc:path': record.path},
+                                    {'panosc:technique': record.technique},
+                                    {'panosc:sampleName': record.sampleName},
+                                    {'panosc:chemicalFormula': record.chemicalFormula},
+                                    {'panosc:size': record.sizeOfArchive},
+                                    {'panosc:wavelength': record.wavelength}]
                             }]
                     }]
             };
@@ -74,7 +81,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
             list.push(item);
         }
 
-        logger.debug('Parsed ' + list.length + " records into OAI xml format.");
+        logger.debug('Parsed ' + list.length + " records into panosc xml format.");
 
         response.ListRecords = list;
 

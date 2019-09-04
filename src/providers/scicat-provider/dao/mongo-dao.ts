@@ -16,7 +16,7 @@ export class MongoConnector {
     logger.debug("Setting up the mongo connection.");
 
     // Get path from the environment.
-   // const credFile = process.env.SCICAT_CONFIGURATION;
+    // const credFile = process.env.SCICAT_CONFIGURATION;
 
     /*if (hasCredentialsFile(credFile)) {
       const creds = getCredentials(credFile);
@@ -128,7 +128,6 @@ export class MongoConnector {
     });
   }
 
-
   public putPublication(parameters: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
@@ -148,19 +147,21 @@ export class MongoConnector {
     });
   }
 
-public getPublication(parameters: any): Promise<any> {
-  if (!this.db) {
-    reject("no db connection");
-  }
-  let Publication = this.db.collection("Publication");
-  return new Promise((resolve: any, reject: any) => {
-    Publication.find().toArray(function(err, items) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(items);
-      }
+  public getPublication(query: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
+    let Publication = this.db.collection("Publication");
+    return new Promise((resolve: any, reject: any) => {
+      // tslint:disable-next-line:no-console
+      // console.log("=====parameters======", query);
+      Publication.findOne(query, {}, function(err, item) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(item);
+        }
+      });
     });
-  });
-}
+  }
 }

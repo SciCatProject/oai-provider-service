@@ -146,7 +146,7 @@ export let getPublication = (req: Request, res: Response) => {
   logger.debug("Get publications request.");
   const dao = MongoConnector.getInstance();
   dao
-    .getPublication(req.query)
+    .getPublication({doi: req.params.id})
     .then(response => {
       res.jsonp(response);
     })

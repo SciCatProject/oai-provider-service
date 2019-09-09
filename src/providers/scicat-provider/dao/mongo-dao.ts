@@ -134,10 +134,7 @@ export class MongoConnector {
     }
     let Publication = this.db.collection("Publication");
     return new Promise((resolve: any, reject: any) => {
-      const query = {
-        _id: parameters.identifier
-      };
-      Publication.insertOne(query, {}, function(err, item) {
+      Publication.insertOne(parameters, {}, function(err, item) {
         if (err) {
           reject(err);
         } else {
@@ -153,8 +150,6 @@ export class MongoConnector {
     }
     let Publication = this.db.collection("Publication");
     return new Promise((resolve: any, reject: any) => {
-      // tslint:disable-next-line:no-console
-      // console.log("=====parameters======", query);
       Publication.findOne(query, {}, function(err, item) {
         if (err) {
           reject(err);

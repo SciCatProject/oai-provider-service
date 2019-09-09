@@ -131,7 +131,7 @@ export let oai = (req: Request, res: Response) => {
 export let putPublication = (req: Request, res: Response) => {
   const dao = MongoConnector.getInstance();
   dao
-    .putPublication(req.query)
+    .putPublication(req.body)
     .then(response => {
       res.send(response);
     })

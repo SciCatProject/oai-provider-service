@@ -144,7 +144,36 @@ export class MongoConnector {
     });
   }
 
+  // supports skip and limit
   public getPublication(query: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
+    let Publication = this.db.collection("Publication");
+    return new Promise((resolve: any, reject: any) => {
+      let skip = 0;
+      let limit = 0;
+      if (query && query.skip) {
+        skip = parseInt(query.skip);
+      }
+      if (query && query.limit) {
+        limit = parseInt(query.limit);
+      }
+
+      Publication.find({})
+        .skip(skip)
+        .limit(limit)
+        .toArray(function(err, result) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+    });
+  }
+
+  public findPublication(query: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }

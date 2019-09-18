@@ -179,7 +179,7 @@ export class MongoConnector {
     }
     let Publication = this.db.collection("Publication");
     return new Promise((resolve: any, reject: any) => {
-      Publication.findOne(query, {}, function(err, item) {
+      Publication.findOne({doi: query}, {}, function(err, item) {
         if (err) {
           reject(err);
         } else {

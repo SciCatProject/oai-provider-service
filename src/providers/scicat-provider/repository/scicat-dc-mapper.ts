@@ -57,7 +57,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                     {'dc:rights': this.getRightsMessage(false)}, //rights?
                                     // .....add more fields here
                                     {'dc:abstract':  record.abstract},
-                                    {'dc:id':  record.id.toString()}],
+                                    {'dc:id':  record._id}],
                             }]
                     }]
             };

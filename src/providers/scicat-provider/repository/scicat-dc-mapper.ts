@@ -10,7 +10,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
      * @returns {string}
      */
     private setTimeZoneOffset(record: any): string {
-        const date = new Date(record.doiRegisteredSuccessfullyTime);
+        const date = new Date(record.doiRegisteredSuccessfullyTime? record.doiRegisteredSuccessfullyTime: null);
         const timeZoneCorrection = new Date(date.getTime() + date.getTimezoneOffset() * -60000);
         timeZoneCorrection.setMilliseconds(0);
         return timeZoneCorrection.toISOString().split('.')[0] + "Z";

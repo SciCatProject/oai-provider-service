@@ -27,6 +27,12 @@ import  xml = require('xml');
 import {EXCEPTION_CODES, ExceptionParams} from "./core-oai-provider";
 import {Exceptions} from "./exceptions/exceptions";
 
+
+var now = new Date();
+now.setDate(now.getDate());
+now.setMilliseconds(0);
+const sNow = now.toISOString().split('.')[0] + "Z";
+
 /**
  * The object used when creating OAI responses. XML responses are produced with the xml library. The
  * shape of this object is specific to that library.
@@ -43,7 +49,7 @@ const responseTemplate = {
                     '\nhttp://www.openarchives.org/OAI/2.0/OAI-PMH.xsd'
                 }
         },
-        {responseDate: new Date().toISOString()}
+        {responseDate: sNow}
     ]
 };
 

@@ -31,13 +31,13 @@ import {ProviderConfiguration} from "../../core/oai-service";
 export class Configuration implements ProviderConfiguration {
 
     public repositoryName: string = "Scicat Provider";
-    public baseURL: string =  "doi.psi.ch";
+    public baseURL: string =  "https://doi.psi.ch/oaipmh/oai/";
     public protocolVersion: string = '2.0';
     public adminEmail: string = "luke.gorman@psi.ch";
     public port: number = 0;
     public description: string = "";
     public deletedRecord: string = DELETED_RECORDS_SUPPORT.NO;
     public granularity: string = HARVESTING_GRANULARITY.DATETIME;
-    public earliestDatestamp: string = '2017-01-00T03:24:00';
+    public earliestDatestamp: string = '2017-01-00T03:24:00Z';
 
 }

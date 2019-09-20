@@ -51,7 +51,8 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                     // ......does it matter what these fields are called?
                                     {'dc:title': record.title},
                                     {'dc:description':  record.dataDescription},
-                                    // {'dc:identifier': record.url},
+                                    {'dc:identifier': record.doi},
+                                    {'dc:identifier': "doi.psi.ch/details/" + record.doi},
                                     {'dc:creator': record.creator},
                                     {'dc:source': record.publisher}, //category?/ source?
                                     {'dc:rights': this.getRightsMessage(false)}, //rights?

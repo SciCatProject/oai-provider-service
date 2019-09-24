@@ -99,7 +99,8 @@ export class MongoConnector {
     let Publication = this.db.collection("Publication");
     return new Promise((resolve: any, reject: any) => {
       const query = {
-        _id: parameters.identifier
+        doi: parameters.identifier
+        
       };
       Publication.findOne(query, {}, function(err, item) {
         if (err) {

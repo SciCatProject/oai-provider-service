@@ -24,6 +24,7 @@
 
 import {DELETED_RECORDS_SUPPORT, HARVESTING_GRANULARITY} from "../../core/core-oai-provider";
 import {ProviderConfiguration} from "../../core/oai-service";
+import os = require('os');
 
 /**
  * module configuration.
@@ -31,9 +32,9 @@ import {ProviderConfiguration} from "../../core/oai-service";
 export class Configuration implements ProviderConfiguration {
 
     public repositoryName: string = "Scicat Provider";
-    public baseURL: string =  "https://doi.psi.ch/oaipmh/oai/";
+    public baseURL: string =  "https://" + os.hostname() + "/oaipmh/oai/";
     public protocolVersion: string = '2.0';
-    public adminEmail: string = "luke.gorman@psi.ch";
+    public adminEmail: string = process.env.ADMIN_USER_EMAIL;
     public port: number = 0;
     public description: string = "";
     public deletedRecord: string = DELETED_RECORDS_SUPPORT.NO;

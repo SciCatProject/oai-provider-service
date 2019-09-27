@@ -1,5 +1,6 @@
 import logger from "../../../server/logger";
 import {ProviderDCMapper} from "../../core/core-oai-provider";
+import os = require('os');
 
 export class ScicatDcMapper implements ProviderDCMapper {
 
@@ -52,7 +53,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                     {'dc:title': record.title},
                                     {'dc:description':  record.dataDescription},
                                     {'dc:identifier': record.doi},
-                                    {'dc:url': "https://" + process.env.host + 
+                                    {'dc:url': "https://" + os.hostname() + 
                                         "/details/" + encodeURI(record.doi)},
                                     {'dc:affiliation': record.affiliation},
                                     {'dc:date': record.publicationYear},

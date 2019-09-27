@@ -356,7 +356,7 @@ export class CoreOaiProvider {
      */
     listRecords(query: ListParameters): Promise<any> {
 
-        logger.debug('ListRecords');
+        logger.debug('ListRecords', query);
 
         return new Promise((resolve: any, reject: any) => {
                 const queryParameters = this.getQueryParameters(query);

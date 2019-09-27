@@ -54,5 +54,5 @@ export default function routes(app: Application): void {
   );
   app.use(auth.connect(basic));*/
   // routes that require basic auth
-  app.put("/scicat/Publication", scicat.putPublication);
+  app.put("/scicat/oai/Publication", scicat.putPublication);
 }

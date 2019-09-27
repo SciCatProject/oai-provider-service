@@ -49,15 +49,20 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                             'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
                                         }
                                 },
-                                    // ......does it matter what these fields are called?
                                     {'dc:title': record.title},
                                     {'dc:description':  record.dataDescription},
                                     {'dc:identifier': record.doi},
-                                    {'dc:identifier': "doi.psi.ch/details/" + record.doi},
+                                    {'dc:identifier (URL)': "https://" + process.env.host + 
+                                        "/details/" + encodeURI(record.doi)},
+                                    {'dc:url': "https://" + process.env.host + 
+                                        "/details/" + encodeURI(record.doi)},
+                                    {'dc:affiliation': record.affiliation},
+                                    {'dc:date': record.publicationYear},
                                     {'dc:creator': record.creator},
+                                    {'dc:type': record.resourceType},
+                                    {'dc:publisher': record.publisher},
                                     {'dc:source': record.publisher}, //category?/ source?
                                     {'dc:rights': this.getRightsMessage(false)}, //rights?
-                                    // .....add more fields here
                                     {'dc:abstract':  record.abstract},
                                     {'dc:id':  record._id}],
                             }]

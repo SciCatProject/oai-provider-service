@@ -53,6 +53,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                     {'dc:description':  record.dataDescription},
                                     {'dc:identifier': record.url},
                                     {'dc:creator': record.creator},
+                                    {'setspec': 'openaire_data'},
                                     {'dc:source': record.publisher}, //category?/ source?
                                     {'dc:rights': this.getRightsMessage(false)}] //rights?
                                     // .....add more fields here
@@ -122,5 +123,26 @@ export class ScicatDcMapper implements ProviderDCMapper {
         return response;
 
     }
+
+    
+    public mapOaiDcListSets(records: any[]): any { 
+
+        const response = {
+            ListSets: <any>[]
+        };
+        const list = [];
+        let item = {
+            set: {
+                setName: "openaire_data",
+                setSpec: "openaire_data"
+            }
+        }
+        list.push(item);
+
+        response.ListSets = list;
+        return response;
+
+    }
+
 
 }

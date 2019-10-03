@@ -62,6 +62,11 @@ export enum METADATA_FORMAT_PANOSC {
   namespace = "http://scicat.esss.se/panosc"
 }
 
+export enum SETS {
+  setspec = "openaire_data",
+  setname = "openaire_data"
+}
+
 export function factory(options = {}): DataRepository {
   const dao: MongoConnector = MongoConnector.getInstance();
 
@@ -69,7 +74,7 @@ export function factory(options = {}): DataRepository {
     /**
      * Defines whether this repository supports sets.
      */
-    setSupport: false,
+    setSupport: true,
 
     /**
      * Defines whether this repository supports resumption tokens.
@@ -101,10 +106,8 @@ export function factory(options = {}): DataRepository {
      * @param {string} resumptionToken
      * @returns {Promise<never>}
      */
-    getSets: (resumptionToken: string = undefined) => {
-      return Promise.reject(
-        resumptionToken ? ERRORS.badResumptionToken : ERRORS.noSetHierarchy
-      );
+    getSets: (identifier: string = undefined) => {
+      return Promise.resolve([SETS ]);
     },
 
     /**

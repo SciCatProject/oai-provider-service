@@ -22,13 +22,14 @@ export class MongoConnector {
       const creds = getCredentials(credFile);
     }*/
     const url = process.env.DB_HOST + ":" + process.env.DB_PORT;
+    
 
     MongoClient.connect("mongodb://" + url, (err, client) => {
       if (err) {
         logger.error("failed to connect", err);
         this.db = null;
       }
-      this.db = client.db("oai-publications");
+      this.db = client.db("dacat");
     });
   }
 
@@ -53,7 +54,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection("PublishedData");
     return new Promise((resolve: any, reject: any) => {
       Publication.find().toArray(function(err, items) {
         if (err) {

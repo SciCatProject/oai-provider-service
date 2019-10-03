@@ -130,4 +130,6 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
 
     }
 
+
+    public mapOaiDcListSets(records: any[]): any { }
 }

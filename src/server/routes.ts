@@ -1,5 +1,6 @@
 /*
- *  Copyright 2018 Willamette University
+ *  Original work Copyright 2018 Willamette University 
+ *  Modified work Copyright 2019 SciCat Organisations
  *
  *  This file is part of OAI-PHM Service.
  *  
@@ -30,6 +31,8 @@ import logger from "./logger";
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
   app.get('/scicat/oai', scicat.oai);
+  //app.put('/scicat/Publication', scicat.putPublication);
+  app.get('/scicat/Publication/:id', scicat.getPublication);
+  app.get('/scicat/Publication', scicat.getPublication);
   app.get('/panosc/oai', panosc.oai);
-  app.put('/scicat/Publication', scicat.publication);
 };

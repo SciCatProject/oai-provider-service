@@ -1,5 +1,6 @@
 /*
- *  Copyright 2018 Willamette University
+ *  Original work Copyright 2018 Willamette University 
+ *  Modified work Copyright 2019 SciCat Organisations 
  *
  *  This file is part of OAI-PHM Service.
  *

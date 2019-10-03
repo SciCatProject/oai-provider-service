@@ -16,19 +16,20 @@ export class MongoConnector {
     logger.debug("Setting up the mongo connection.");
 
     // Get path from the environment.
-    const credFile = process.env.SCICAT_CONFIGURATION;
+    // const credFile = process.env.SCICAT_CONFIGURATION;
 
     /*if (hasCredentialsFile(credFile)) {
       const creds = getCredentials(credFile);
     }*/
-    const url = "mongodb://localhost:27017";
+    const url = process.env.DB_HOST + ":" + process.env.DB_PORT;
+    
 
-    MongoClient.connect("mongodb://localhost:27017", (err, client) => {
+    MongoClient.connect("mongodb://" + url, (err, client) => {
       if (err) {
         logger.error("failed to connect", err);
         this.db = null;
       }
-      this.db = client.db("aoi-publications");
+      this.db = client.db("dacat");
     });
   }
 
@@ -77,7 +78,7 @@ export class MongoConnector {
     let Publication = this.db.collection("Publication");
     return new Promise((resolve: any, reject: any) => {
       // need to add relevant date to projection
-      Publication.find({},{_id: 1 }).toArray(function(err, items) {
+      Publication.find({}, { _id: 1 }).toArray(function(err, items) {
         if (err) {
           reject(err);
         } else {
@@ -124,6 +125,38 @@ export class MongoConnector {
             logger.error("recordsQuery error:", err);
           }
         });
+      });
+    });
+  }
+
+  public putPublication(parameters: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
+    let Publication = this.db.collection("Publication");
+    return new Promise((resolve: any, reject: any) => {
+      Publication.insertOne(parameters, {}, function(err, item) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(item);
+        }
+      });
+    });
+  }
+
+  public getPublication(query: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
+    let Publication = this.db.collection("Publication");
+    return new Promise((resolve: any, reject: any) => {
+      Publication.findOne(query, {}, function(err, item) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(item);
+        }
       });
     });
   }

@@ -44,7 +44,7 @@ gulp.task("copy", function() {
 });
 
 gulp.task("copy-production", function() {
-    return gulp.src(["production/.env"])
+    return gulp.src(["production/.env", "production/host_config.json"])
         .pipe(gulp.dest("dist/server"));
 });
 gulp.task("dist-clean", function() {

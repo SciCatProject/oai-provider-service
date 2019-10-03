@@ -54,7 +54,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("PublishedData");
+    let Publication = this.db.collection("Publication");
     return new Promise((resolve: any, reject: any) => {
       Publication.find().toArray(function(err, items) {
         if (err) {

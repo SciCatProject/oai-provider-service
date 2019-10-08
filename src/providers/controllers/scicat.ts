@@ -172,10 +172,10 @@ export let getPublication = (req: Request, res: Response) => {
 
 // is commonly a cross origin request
 export let findPublication = (req: Request, res: Response) => {
-  logger.debug("Find publications request.", req.params.id);
+  logger.debug("Find publications request.", decodeURIComponent(req.params.id));
   // need to decode doi parameter from URL
   const dao = MongoConnector.getInstance();
-  const doi = decodeURI(req.params.id);
+  const doi = decodeURIComponent(req.params.id);
   dao
     .findPublication(doi)
     .then(response => {

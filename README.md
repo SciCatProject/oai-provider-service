@@ -39,17 +39,17 @@ npm run dev
 
 The Express server will start on default port 3001.  
 
-* [`http://localhost:3000/scicat/oai?verb=Identify`](http://localhost:3000/scicat/oai?verb=Identify)
-* [`http://localhost:3000/scicat/oai?verb=ListMetadataFormats`](http://localhost:3001/scicat/oai?verb=ListMetadataFormats)
-* [`http://localhost:3000/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc`](http://localhost:3001/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc)
-* [`http://localhost:3000/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc`](http://localhost:3001/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc)
-* [`http://localhost:3000/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc`](http://localhost:3001/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc)
+* [`http://localhost:3001/scicat/oai?verb=Identify`](http://localhost:3000/scicat/oai?verb=Identify)
+* [`http://localhost:3001/scicat/oai?verb=ListMetadataFormats`](http://localhost:3001/scicat/oai?verb=ListMetadataFormats)
+* [`http://localhost:3001/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc`](http://localhost:3001/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc)
+* [`http://localhost:3001/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc`](http://localhost:3001/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc)
+* [`http://localhost:3001/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc`](http://localhost:3001/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc)
 
 ### PUT Records:
 
 Add new records to your mongodb instance by HTTP PUT using the following route:
 
-* `http://localhost:3000/scicat/Publication`
+* `http://localhost:3001/scicat/Publication`
 
 
 ## Run in *production* mode:

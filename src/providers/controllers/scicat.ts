@@ -162,11 +162,11 @@ export let getPublication = (req: Request, res: Response) => {
   dao
     .getPublication(params)
     .then(response => {
-      res.jsonp(response);
+      res.send(response)
     })
     .catch(oaiError => {
       res.status(500);
-      res.jsonp(oaiError);
+      res.send(oaiError)
     });
 };
 
@@ -179,11 +179,11 @@ export let findPublication = (req: Request, res: Response) => {
   dao
     .findPublication(doi)
     .then(response => {
-      res.jsonp(response);
+      res.send(response)
     })
     .catch(oaiError => {
       res.status(500);
-      res.jsonp(oaiError);
+      res.send(oaiError)
     });
 };
 

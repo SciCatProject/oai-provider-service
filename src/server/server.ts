@@ -30,6 +30,7 @@ import http = require('http');
 import os = require('os');
 import logger from './logger';
 import {getHostConfiguration, hasHostConfigurationFile} from "./host-config";
+import * as cors from "cors";
 
 const app = express();
 
@@ -37,8 +38,17 @@ const app = express();
 export default class ExpressServer {
 
     constructor() {
+        const options:cors.CorsOptions = {
+            allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
+            credentials: true,
+            methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+            //origin: API_URL,
+            preflightContinue: false
+          };
+
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({extended: true}));
+        app.use(cors(options));
     }
 
     router(routes: (app: Application) => void): ExpressServer {
@@ -52,8 +62,8 @@ export default class ExpressServer {
         const port = this.getPort(config);
 
         const welcome: any = () => {
-            logger.info(`Up and running in ${process.env.NODE_ENV || 
-            'development'} @: ${os.hostname() } on port: ${port}}`);
+            logger.info(`******** Up and running in ${process.env.NODE_ENV || 
+            'development'} @: ${os.hostname() } on port: ${port}}***********`);
         };
 
         http.createServer(app).listen(port, welcome());

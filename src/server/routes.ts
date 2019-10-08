@@ -33,7 +33,7 @@ export default function routes(app: Application): void {
   logger.debug("Setting express routes for OAI providers.");
   // routes that do not require auth
   app.get("/scicat/oai", scicat.oai);
-  app.get("/scicat/Publication/:id", scicat.findPublication);
+  app.get("/scicat/Publication/detail/:id?", scicat.findPublication);
   // curl -X GET --header 'Accept: application/json' 
   //    'http://localhost:3001/scicat/Publication?limits=(limit:30,skip:0)'
   app.get("/scicat/Publication/:limits?", scicat.getPublication);

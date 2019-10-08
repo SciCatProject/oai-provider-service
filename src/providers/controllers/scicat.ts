@@ -34,8 +34,9 @@ const provider = new CoreOaiProvider(
  * @param {Response} res
  */
 export let oai = (req: Request, res: Response) => {
-  res.set("Content-Type", "text/xml");
 
+  res.set("Content-Type", "text/xml");
+  logger.debug("Request:", req.query);
   switch (req.query.verb) {
     case "Identify":
       logger.debug("Identify request.");
@@ -171,7 +172,7 @@ export let getPublication = (req: Request, res: Response) => {
 
 // is commonly a cross origin request
 export let findPublication = (req: Request, res: Response) => {
-  logger.debug("Get publications request.");
+  logger.debug("Find publications request.", req.params.id);
   // need to decode doi parameter from URL
   const dao = MongoConnector.getInstance();
   const doi = decodeURI(req.params.id);

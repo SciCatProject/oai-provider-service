@@ -53,7 +53,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                     {'dc:title': record.title},
                                     {'dc:description':  record.dataDescription},
                                     {'dc:identifier': record.doi},
-                                    {'dc:identifier (url)': "https://" + os.hostname() + 
+                                    {'dc:identifier': "https://" + os.hostname() + 
                                     "/detail/" + encodeURIComponent(record.doi)},
                                     {'dc:url': "https://" + os.hostname() + 
                                         "/detail/" + encodeURIComponent(record.doi)},

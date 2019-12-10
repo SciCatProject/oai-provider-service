@@ -68,65 +68,71 @@ export class ScicatDcMapper implements ProviderDCMapper {
         return item;
     }
 
-    public mapOaiDcListRecords(records: any[]): any {
+  public mapOaiDcListRecords(records: any[]): any {
+    const list = [];
+    const response = {
+      ListRecords: <any>[]
+    };
 
-        const list = [];
-        const response = {
-            ListRecords: <any>[]
-        };
-
-        for (let record of records) {
-            let item = this.createItemRecord(record);
-            list.push(item);
-        }
-
-        logger.debug('Parsed ' + list.length + " records into OAI xml format.");
-
-        response.ListRecords = list;
-
-        return response;
-
+    for (let record of records) {
+      let item = this.createItemRecord(record);
+      list.push(item);
     }
 
-    public mapOaiDcGetRecord(record: any): any {
-        if (!record) {
-            throw new Error("Record not found");
-        }
+    logger.debug("Parsed " + list.length + " records into OAI xml format.");
 
-        let item = this.createItemRecord(record);
-        logger.debug('Got item with id ' + record._id + ", title: " + record.title);
-        return item;
+    response.ListRecords = list;
 
+    return response;
+  }
+
+  public mapOaiDcGetRecord(record: any): any {
+    if (!record) {
+      throw new Error("Record not found");
     }
 
-    public mapOaiDcListIdentifiers(records: any[]): any {
+    let item = this.createItemRecord(record);
+    logger.debug("Got item with id " + record._id + ", title: " + record.title);
+    return item;
+  }
 
-        const list = [];
-        const response = {
-            ListIdentifiers: <any>[]
-        };
+  public mapOaiDcListIdentifiers(records: any[]): any {
+    const list = [];
+    const response = {
+      ListIdentifiers: <any>[]
+    };
 
-        for (let record of records) {
-            const updatedAt: string = this.setTimeZoneOffset(record);
-            let item =
-                {
-                    record: [
-                        {
-                            'header': [
-                                {'identifier': record.doi},
-                                {'datestamp': updatedAt}
-                            ]
-                        }
-                    ]
-                };
+    for (let record of records) {
+      const updatedAt: string = this.setTimeZoneOffset(record);
+      let item = {
+        record: [
+          {
+            header: [
+              { identifier: record.id.toString() },
+              { datestamp: updatedAt }
+            ]
+          }
+        ]
+      };
 
-            list.push(item);
-        }
-
-        response.ListIdentifiers = list;
-
-        return response;
-
+      list.push(item);
     }
 
+    response.ListIdentifiers = list;
+
+    return response;
+  }
+
+  public mapOaiDcListSets(records: any[]): any {
+    const response = {
+      ListSets: <any>[]
+    };
+    const list = [];
+    let item = {
+      set: [{ setName: "openaire_data" }, { setSpec: "openaire_data" }]
+    };
+    list.push(item);
+    response.ListSets = list;
+    return response;
+  }
 }

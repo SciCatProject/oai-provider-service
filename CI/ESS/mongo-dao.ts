@@ -21,7 +21,8 @@ export class MongoConnector {
     /*if (hasCredentialsFile(credFile)) {
       const creds = getCredentials(credFile);
     }*/
-    const url = "mongodb://mongodb-production-mongodb.production:27017";
+    //const url = "mongodb://mongodb-production-mongodb.production:27017";
+    const url = "mongodb://local-mongodb-mongodb.dev:27017";
 
     MongoClient.connect(url, (err, client) => {
       if (err) {

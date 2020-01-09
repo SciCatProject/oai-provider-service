@@ -75,7 +75,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection("PublishedData");
     return new Promise((resolve: any, reject: any) => {
       // need to add relevant date to projection
       Publication.find({},{_id: 1 }).toArray(function(err, items) {
@@ -97,7 +97,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection("PublishedData");
     return new Promise((resolve: any, reject: any) => {
       const query = {
         _id: parameters.identifier
@@ -116,7 +116,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    var collection = this.db.collection("Publication");
+    var collection = this.db.collection("PublishedData");
     var resolve = null;
     return new Promise((resolve: any, err: any) => {
       var resolve = collection.aggregate(pipeline, function(err, cursor) {

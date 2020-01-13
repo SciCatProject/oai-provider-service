@@ -29,7 +29,12 @@ export class ScicatDcMapper implements ProviderDCMapper {
       record: [
         {
           header: [
-            { identifier: [{ _attr: { "identifierType":"DOI"} }, record._id.toString() ] },
+            {
+              identifier: [
+                { _attr: { identifierType: "DOI" } },
+                record._id.toString()
+              ]
+            },
             { setSpec: "openaire_data" },
             { datestamp: "2020-01-01" }
           ]
@@ -40,34 +45,43 @@ export class ScicatDcMapper implements ProviderDCMapper {
               "oai_dc:dc": [
                 {
                   _attr: {
-                    "xmlns:oai_dc":
-                      "http://www.openarchives.org/OAI/2.0/oai_dc/",
-                    "xmlns:dc": "http://purl.org/dc/elements/1.1/",
+                    "xmlns:rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                    "xmlns:dc": "http://purl.org/dc/elements/1.1/",
+                    "xmlns:dcterms": "http://purl.org/dc/terms/",
+                    "xmlns:datacite": "http://datacite.org/schema/kernel-4",
+                    "xmlns": "http://namespace.openaire.eu/schema/oaire/",
                     "xsi:schemaLocation":
-                      "http://www.openarchives.org/OAI/2.0/oai_dc/ " +
-                      "http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
+                      "http://namespace.openaire.eu/schema/oaire/" +
+                      "https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd"
                   }
                 },
                 // ......does it matter what these fields are called?
                 {
-                  "titles": [{ "title": record.title }]
+                  titles: [{ title: record.title }]
                 },
-                { "description":  record.dataDescription },
-                { "date": [{ _attr: { "dateType":"Issued"} }, "2020-01-01" ] },
-                { "publicationYear":  record.publicationYear },
+                { description: record.dataDescription },
+                { date: [{ _attr: { dateType: "Issued" } }, "2020-01-01"] },
+                { publicationYear: record.publicationYear },
                 {
-                  "creators": [{ "creator": record.creator }]
+                  creators: [{ creator: record.creator }]
                 },
-                { "publisher": record.publisher }, //category?/ source?
-                { "version": 1 }, //category?/ source?
+                { publisher: record.publisher }, //category?/ source?
+                { version: 1 }, //category?/ source?
                 {
-                  "rightsList": [{
-                    "rights": [{
-                      _attr: {
-                    "rightsURI":"info:eu-repo/semantics/openAccess"
-                  }}, "OpenAccess"] }]
-                },
+                  rightsList: [
+                    {
+                      rights: [
+                        {
+                          _attr: {
+                            rightsURI: "info:eu-repo/semantics/openAccess"
+                          }
+                        },
+                        "OpenAccess"
+                      ]
+                    }
+                  ]
+                }
               ] //rights?
               // .....add more fields here
             }

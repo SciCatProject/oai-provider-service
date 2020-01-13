@@ -12,6 +12,7 @@ RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false
 RUN npm install
 COPY CI/ESS/mongo-dao.ts /usr/src/app/src/providers/scicat-provider/dao/mongo-dao.ts
+COPY CI/ESS/scicat-dc-mapper.ts /usr/src/app/src/providers/scicat-provider/repository/scicat-dc-mapper.ts
 COPY CI/ESS/configuration.ts /usr/src/app/src/providers/scicat-provider/repository/configuration.ts
 RUN npm run compile
 ENV NODE_ENV=production

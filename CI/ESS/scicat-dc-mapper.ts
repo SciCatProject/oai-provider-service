@@ -54,6 +54,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                   "titles": [{ "title": record.title }]
                 },
                 { "description":  record.dataDescription },
+                { "publicationYear":  record.publicationYear },
                 {
                   "creators": [{ "creator": record.creator }]
                 },

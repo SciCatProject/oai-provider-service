@@ -31,7 +31,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
           header: [
             { identifier: [{ _attr: { "identifierType":"DOI"} }, record._id.toString() ] },
             { setSpec: "openaire_data" },
-            { datestamp: record.updatedAt }
+            { datestamp: "2020-01-01" }
           ]
         },
         {
@@ -54,12 +54,20 @@ export class ScicatDcMapper implements ProviderDCMapper {
                   "titles": [{ "title": record.title }]
                 },
                 { "description":  record.dataDescription },
+                { "date": [{ _attr: { "dateType":"Issued"} }, "2020-01-01" ] },
                 { "publicationYear":  record.publicationYear },
                 {
                   "creators": [{ "creator": record.creator }]
                 },
                 { "publisher": record.publisher }, //category?/ source?
-                { "dc:rights": this.getRightsMessage(false) }
+                { "version": 1 }, //category?/ source?
+                {
+                  "rightsList": [{
+                    "rights": [{
+                      _attr: {
+                    "rightsURI":"info:eu-repo/semantics/openAccess"
+                  }}, "OpenAccess"] }]
+                },
               ] //rights?
               // .....add more fields here
             }

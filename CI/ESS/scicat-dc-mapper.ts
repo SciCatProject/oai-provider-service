@@ -29,9 +29,9 @@ export class ScicatDcMapper implements ProviderDCMapper {
       record: [
         {
           header: [
-            { identifier: record._id.toString() },
+            { identifier: [{ _attr: { "identifierType":"DOI"} }, record._id.toString() ] },
             { setSpec: "openaire_data" },
-            { datestamp: "updatedAt" }
+            { datestamp: record.updatedAt }
           ]
         },
         {
@@ -53,8 +53,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                 {
                   "titles": [{ "title": record.title }]
                 },
-                { "description": record.dataDescription },
-                { "dc:identifier": record.url },
+                { "description":  record.dataDescription },
                 {
                   "creators": [{ "creator": record.creator }]
                 },

@@ -42,34 +42,33 @@ export class ScicatDcMapper implements ProviderDCMapper {
         {
           metadata: [
             {
-              "oai_dc:dc": [
+              "datacite:resource": [
                 {
                   _attr: {
                     "xmlns:rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
                     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                    "xmlns:dc": "http://purl.org/dc/elements/1.1/",
                     "xmlns:dcterms": "http://purl.org/dc/terms/",
                     "xmlns:datacite": "http://datacite.org/schema/kernel-4",
                     "xmlns": "http://namespace.openaire.eu/schema/oaire/",
                     "xsi:schemaLocation":
-                      "http://namespace.openaire.eu/schema/oaire/" +
+                      "http://www.openarchives.org/OAI/2.0/oai_dc/ " +
                       "https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd"
                   }
                 },
                 // ......does it matter what these fields are called?
                 {
-                  titles: [{ title: record.title }]
+                  "datacite:titles": [{ title: record.title }]
                 },
-                { description: record.dataDescription },
-                { date: [{ _attr: { dateType: "Issued" } }, "2020-01-01"] },
-                { publicationYear: record.publicationYear },
+                { "datacite:description": record.dataDescription },
+                { "datacite:date": [{ _attr: { dateType: "Issued" } }, "2020-01-01"] },
+                { "datacite:publicationYear": record.publicationYear },
                 {
-                  creators: [{ creator: record.creator }]
+                  "datacite:creators": [{ creator: record.creator }]
                 },
-                { publisher: record.publisher }, //category?/ source?
-                { version: 1 }, //category?/ source?
+                { "datacite:publisher": record.publisher }, //category?/ source?
+                { "datacite:version": 1 }, //category?/ source?
                 {
-                  rightsList: [
+                  "datacite:rightsList": [
                     {
                       rights: [
                         {

@@ -49,7 +49,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
                     "xmlns:dcterms": "http://purl.org/dc/terms/",
                     "xmlns:datacite": "http://datacite.org/schema/kernel-4",
-                    "xmlns": "http://namespace.openaire.eu/schema/oaire/",
+                    xmlns: "http://namespace.openaire.eu/schema/oaire/",
                     "xsi:schemaLocation":
                       "http://www.openarchives.org/OAI/2.0/oai_dc/ " +
                       "https://www.openaire.eu/schema/repo-lit/4.0/openaire.xsd"
@@ -59,8 +59,27 @@ export class ScicatDcMapper implements ProviderDCMapper {
                 {
                   "datacite:titles": [{ title: record.title }]
                 },
-                { "datacite:description": record.dataDescription },
-                { "datacite:date": [{ _attr: { dateType: "Issued" } }, "2020-01-01"] },
+                {
+                  "datacite:descriptions": [
+                    { "datacite:description": record.dataDescription }
+                  ]
+                },
+                {
+                  "datacite:dates": [
+                    {
+                      "datacite:date": [
+                        { _attr: { dateType: "Issued" } },
+                        "2020-01-01"
+                      ]
+                    },
+                    {
+                      "datacite:date": [
+                        { _attr: { dateType: "Available" } },
+                        "2020-01-01"
+                      ]
+                    }
+                  ]
+                },
                 { "datacite:publicationYear": record.publicationYear },
                 {
                   "datacite:creators": [{ creator: record.creator }]
@@ -70,7 +89,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                 {
                   "datacite:rightsList": [
                     {
-                      rights: [
+                      "datacite:rights": [
                         {
                           _attr: {
                             rightsURI: "info:eu-repo/semantics/openAccess"

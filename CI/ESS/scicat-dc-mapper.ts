@@ -30,8 +30,8 @@ export class ScicatDcMapper implements ProviderDCMapper {
         {
           header: [
             {
-              identifier: [
-                { _attr: { identifierType: "DOI" } },
+              "datacite:identifier": [
+                { _attr: { identifierType: "doi" } },
                 record._id.toString()
               ]
             },
@@ -61,7 +61,11 @@ export class ScicatDcMapper implements ProviderDCMapper {
                 },
                 {
                   "datacite:descriptions": [
-                    { "datacite:description": record.dataDescription }
+                    {
+                      "datacite:description": [
+                        { _attr: { descriptionType: "Abstract" } },
+                        record.dataDescription]
+                    }
                   ]
                 },
                 {
@@ -82,7 +86,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                 },
                 { "datacite:publicationYear": record.publicationYear },
                 {
-                  "datacite:creators": [{ creator: record.creator }]
+                  "datacite:creators": [{ "datacite:creator": record.creator }]
                 },
                 { "datacite:publisher": record.publisher }, //category?/ source?
                 { "datacite:version": 1 }, //category?/ source?

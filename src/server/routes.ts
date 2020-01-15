@@ -26,6 +26,7 @@
 import { Application } from 'express';
 import * as scicat from "../providers/controllers/scicat";
 import * as panosc from "../providers/controllers/panosc";
+import * as openaire from "../providers/controllers/openaire";
 import logger from "./logger";
 
 export default function routes(app: Application): void {

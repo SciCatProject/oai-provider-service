@@ -1,5 +1,5 @@
 /*
- *  Original work Copyright 2018 Willamette University 
+ *  Original work Copyright 2018 Willamette University
  *  Modified work Copyright 2019 SciCat Organisations
  *
  *  This file is part of OAI-PHM Service.
@@ -80,7 +80,7 @@ export function factory(options = {}): DataRepository {
     /**
      * Defines whether this repository supports sets.
      */
-    setSupport: false,
+    setSupport: true,
 
     /**
      * Defines whether this repository supports resumption tokens.
@@ -104,7 +104,11 @@ export function factory(options = {}): DataRepository {
 
     getMetadataFormats: (identifier: string = undefined) => {
       // Since only DC is supported, safe to ignore the identifier param.
-      return Promise.resolve([METADATA_FORMAT_DC, METADATA_FORMAT_PANOSC, METADATA_FORMAT_OAI_DATACITE]);
+      return Promise.resolve([
+        METADATA_FORMAT_DC,
+        METADATA_FORMAT_PANOSC,
+        METADATA_FORMAT_OAI_DATACITE
+      ]);
     },
 
     /**
@@ -112,10 +116,9 @@ export function factory(options = {}): DataRepository {
      * @param {string} resumptionToken
      * @returns {Promise<never>}
      */
-    getSets: (resumptionToken: string = undefined) => {
-      return Promise.reject(
-        resumptionToken ? ERRORS.badResumptionToken : ERRORS.noSetHierarchy
-      );
+
+    getSets: (identifier: string = undefined) => {
+      return Promise.resolve([SETS]);
     },
 
     /**

@@ -83,6 +83,7 @@ export interface ProviderDCMapper {
     mapOaiDcGetRecord(records: any): any;
 
     mapOaiDcListIdentifiers(records: any[]): any;
+    mapOaiDcListSets(records: any[]): any;
 
 }
 
@@ -471,7 +472,8 @@ export class CoreOaiProvider {
                     !this.hasKey(query, 'resumptionToken'))) {
                 resolve(generateException(exception, EXCEPTION_CODES.BAD_ARGUMENT));
             } else {
-                resolve(generateException(exception, EXCEPTION_CODES.NO_SET_HIERARCHY));
+                const mapped = this.mapper.mapOaiDcListSets()
+                resolve(generateResponse(<any>query, this.parameters.baseURL, mapped));
             }
         });
     }

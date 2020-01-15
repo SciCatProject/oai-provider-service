@@ -35,4 +35,5 @@ export default function routes(app: Application): void {
   app.get('/scicat/Publication/:id', scicat.getPublication);
   app.get('/scicat/Publication', scicat.getPublication);
   app.get('/panosc/oai', panosc.oai);
+  app.get('/openaire/oai', openaire.oai);
 };

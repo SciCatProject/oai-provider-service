@@ -1,4 +1,4 @@
-FROM node:8.9.4
+FROM node:13-alpine
 
 # This Dockerfile assumes that you have built production code using npm run compile
 

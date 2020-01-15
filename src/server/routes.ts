@@ -26,33 +26,18 @@
 import { Application } from "express";
 import * as scicat from "../providers/controllers/scicat";
 import * as panosc from "../providers/controllers/panosc";
+import * as openaire from "../providers/controllers/openaire";
 import logger from "./logger";
 import * as auth from "http-auth";
 
 export default function routes(app: Application): void {
-  logger.debug("Setting express routes for OAI providers.");
-  // routes that do not require auth
-  app.get("/scicat/oai", scicat.oai);
+  logger.debug('Setting express routes for OAI providers.');
+  app.get('/scicat/oai', scicat.oai);
   app.get("/scicat/Publication/detail/:id?", scicat.findPublication);
-  // curl -X GET --header 'Accept: application/json' 
-  //    'http://localhost:3001/scicat/Publication?limits=(limit:30,skip:0)'
   app.get("/scicat/Publication/:limits?", scicat.getPublication);
-  app.get("/panosc/oai", panosc.oai);
-
-  // const passwd = process.env.passwd;
-  // var basic = auth.basic({realm:"MyRealm", file:"/srv/config/passwd"});
-  /*var basic = auth.basic(
-    {
-      realm: "localhost"
-    },
-    (username, password, callback) => {
-      console.log("----------username", username, password)
-      // Custom authentication
-      // Use callback(error) if you want to throw async error.
-      callback(username === "Tina" && password === "Bullock");
-    }
-  );
-  app.use(auth.connect(basic));*/
-  // routes that require basic auth
-  app.put("/scicat/oai/Publication", scicat.putPublication);
-}
+  app.put('/scicat/Publication', scicat.putPublication);
+  //app.get('/scicat/Publication/:id', scicat.getPublication);
+  app.get('/scicat/Publication', scicat.getPublication);
+  app.get('/panosc/oai', panosc.oai);
+  app.get('/openaire/oai', openaire.oai);
+};

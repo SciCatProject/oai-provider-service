@@ -62,6 +62,17 @@ export enum METADATA_FORMAT_PANOSC {
   namespace = "http://scicat.esss.se/panosc"
 }
 
+export enum METADATA_FORMAT_OAI_DATACITE {
+  prefix = "oai_datacite",
+  schema = "http://schema.datacite.org/meta/kernel-3/metadata.xsd",
+  namespace = "http://datacite.org/schema/kernel-3"
+}
+
+export enum SETS {
+  setspec = "openaire_data",
+  setname = "openaire_data"
+}
+
 export function factory(options = {}): DataRepository {
   const dao: MongoConnector = MongoConnector.getInstance();
 
@@ -93,7 +104,7 @@ export function factory(options = {}): DataRepository {
 
     getMetadataFormats: (identifier: string = undefined) => {
       // Since only DC is supported, safe to ignore the identifier param.
-      return Promise.resolve([METADATA_FORMAT_DC, METADATA_FORMAT_PANOSC]);
+      return Promise.resolve([METADATA_FORMAT_DC, METADATA_FORMAT_PANOSC, METADATA_FORMAT_OAI_DATACITE]);
     },
 
     /**

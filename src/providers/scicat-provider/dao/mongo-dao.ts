@@ -10,7 +10,7 @@ import { MongoClient } from "mongodb";
  */
 export class MongoConnector {
   public static instance: MongoConnector;
-  public db: null;
+  public db;
 
   private constructor() {
     logger.debug("Setting up the mongo connection.");

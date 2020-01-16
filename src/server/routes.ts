@@ -35,7 +35,7 @@ export default function routes(app: Application): void {
   app.get('/scicat/oai', scicat.oai);
   app.get("/scicat/Publication/detail/:id?", scicat.findPublication);
   app.get("/scicat/Publication/:limits?", scicat.getPublication);
-  app.put('/scicat/Publication', scicat.putPublication);
+  app.put('/scicat/oai/Publication', scicat.putPublication);
   //app.get('/scicat/Publication/:id', scicat.getPublication);
   app.get('/scicat/Publication', scicat.getPublication);
   app.get('/panosc/oai', panosc.oai);

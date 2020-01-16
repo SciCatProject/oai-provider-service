@@ -11,6 +11,8 @@ import { MongoClient } from "mongodb";
 export class MongoConnector {
   public static instance: MongoConnector;
   public db;
+  public dbName: string;
+  public collectionName: string;
 
   private constructor() {
     logger.debug("Setting up the mongo connection.");
@@ -22,13 +24,15 @@ export class MongoConnector {
       const creds = getCredentials(credFile);
     }*/
     const url = process.env.DB_HOST + ":" + process.env.DB_PORT;
+    this.dbName = process.env.DATABASE;
+    this.collectionName = process.env.COLLECTION;
 
     MongoClient.connect("mongodb://" + url, (err, client) => {
       if (err) {
         logger.error("failed to connect", err);
         this.db = null;
       }
-      this.db = client.db("oai-publications");
+      this.db = client.db(this.dbName);
     });
   }
 
@@ -53,7 +57,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       Publication.find().toArray(function(err, items) {
         if (err) {
@@ -74,7 +78,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       // need to add relevant date to projection
       Publication.find({}, { _id: 1 }).toArray(function(err, items) {
@@ -96,7 +100,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       const query = {
         doi: parameters.identifier
@@ -116,7 +120,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    var collection = this.db.collection("Publication");
+    var collection = this.db.collection(this.collectionName);
     var resolve = null;
     return new Promise((resolve: any, err: any) => {
       var resolve = collection.aggregate(pipeline, function(err, cursor) {
@@ -133,7 +137,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       Publication.insertOne(parameters, {}, function(err, item) {
         if (err) {
@@ -150,7 +154,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       let skip = 0;
       let limit = 0;
@@ -178,7 +182,7 @@ export class MongoConnector {
     if (!this.db) {
       reject("no db connection");
     }
-    let Publication = this.db.collection("Publication");
+    let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       Publication.findOne({doi: query}, {}, function(err, item) {
         if (err) {

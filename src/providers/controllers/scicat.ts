@@ -95,7 +95,7 @@ export let oai = (req: Request, res: Response) => {
       break;
 
     case "ListSets":
-      logger.debug("ListSet request.");
+      logger.debug("ListSets request.");
       provider
         .listSets(req.query)
         .then(response => {

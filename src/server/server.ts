@@ -30,7 +30,8 @@ import http = require("http");
 import os = require("os");
 import logger from "./logger";
 import { getHostConfiguration, hasHostConfigurationFile } from "./host-config";
-import * as cors from "cors";
+import cors = require('cors');
+
 
 const app = express();
 
@@ -50,7 +51,6 @@ export default class ExpressServer {
       preflightContinue: false
     };
 
-    app.use(bodyParser.json());
     app.use(bodyParser.json({ limit: "50mb" }));
     app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
     app.use(cors(options));

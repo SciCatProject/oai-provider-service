@@ -357,7 +357,7 @@ export class CoreOaiProvider {
      */
     listRecords(query: ListParameters): Promise<any> {
 
-        logger.debug('ListRecords');
+        logger.debug('ListRecords', query);
 
         return new Promise((resolve: any, reject: any) => {
                 const queryParameters = this.getQueryParameters(query);
@@ -468,13 +468,13 @@ export class CoreOaiProvider {
                 baseUrl: this.parameters.baseURL,
                 verb: VERBS.LIST_SETS
             };
-            if (queryParameters.length > 2 || (queryParameters.length === 2 &&
+            /*if (queryParameters.length > 2 || (queryParameters.length === 2 &&
                     !this.hasKey(query, 'resumptionToken'))) {
                 resolve(generateException(exception, EXCEPTION_CODES.BAD_ARGUMENT));
-            } else {
-                const mapped = this.mapper.mapOaiDcListSets()
+            } else {*/
+                const mapped = this.mapper.mapOaiDcListSets(null)
                 resolve(generateResponse(<any>query, this.parameters.baseURL, mapped));
-            }
+           /* }*/
         });
     }
 

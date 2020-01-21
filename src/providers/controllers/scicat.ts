@@ -34,8 +34,9 @@ const provider = new CoreOaiProvider(
  * @param {Response} res
  */
 export let oai = (req: Request, res: Response) => {
-  res.set("Content-Type", "text/xml");
 
+  res.set("Content-Type", "text/xml");
+  logger.debug("Request:", req.query);
   switch (req.query.verb) {
     case "Identify":
       logger.debug("Identify request.");
@@ -94,7 +95,7 @@ export let oai = (req: Request, res: Response) => {
       break;
 
     case "ListSets":
-      logger.debug("ListSet request.");
+      logger.debug("ListSets request.");
       provider
         .listSets(req.query)
         .then(response => {
@@ -129,6 +130,7 @@ export let oai = (req: Request, res: Response) => {
 };
 
 export let putPublication = (req: Request, res: Response) => {
+  logger.debug("Put publication request.");
   const dao = MongoConnector.getInstance();
   dao
     .putPublication(req.body)
@@ -141,18 +143,47 @@ export let putPublication = (req: Request, res: Response) => {
     });
 };
 
-// is commonly cross a cross origin request
+// is commonly a cross origin request
 export let getPublication = (req: Request, res: Response) => {
-  logger.debug("Get publications request.");
+  logger.debug("Get publications request. ", req.query.limits);
+  const limits = req.query.limits;
+  let params = null;
+  if(limits) {
+    // decode limits string and convert to JSON
+    const parts = decodeURI(limits).replace(/[()]/g, "").replace(/"/g, '\\"')
+      .replace(/&/g, '","').replace(/=/g,'":"');
+    let partsArr = parts.split(",");
+    partsArr.forEach(function(part, index) {
+      this[index] = '"' + this[index].replace(/[:]/g, '":"') + '"';
+    }, partsArr);
+    params = JSON.parse("{" + partsArr.join(",") + "}");
+  }
   const dao = MongoConnector.getInstance();
   dao
-    .getPublication({doi: req.params.id})
+    .getPublication(params)
     .then(response => {
-      res.jsonp(response);
+      res.send(response)
     })
     .catch(oaiError => {
       res.status(500);
-      res.jsonp(oaiError);
+      res.send(oaiError)
+    });
+};
+
+// is commonly a cross origin request
+export let findPublication = (req: Request, res: Response) => {
+  logger.debug("Find publications request.", decodeURIComponent(req.params.id));
+  // need to decode doi parameter from URL
+  const dao = MongoConnector.getInstance();
+  const doi = decodeURIComponent(req.params.id);
+  dao
+    .findPublication(doi)
+    .then(response => {
+      res.send(response)
+    })
+    .catch(oaiError => {
+      res.status(500);
+      res.send(oaiError)
     });
 };
 

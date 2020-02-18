@@ -30,14 +30,16 @@ import http = require("http");
 import os = require("os");
 import logger from "./logger";
 import { getHostConfiguration, hasHostConfigurationFile } from "./host-config";
-import cors = require('cors');
+import { CorsOptions } from "cors";
+var cors = require('cors')
 
 
 const app = express();
 
+
 export default class ExpressServer {
   constructor() {
-    const options: cors.CorsOptions = {
+    const options: CorsOptions = {
       allowedHeaders: [
         "Origin",
         "X-Requested-With",
@@ -54,7 +56,6 @@ export default class ExpressServer {
     app.use(bodyParser.json({ limit: "50mb" }));
     app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
     app.use(cors(options));
-
 
   }
 

@@ -34,6 +34,7 @@ export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
   app.get('/scicat/oai', scicat.oai);
   app.get("/scicat/Publication/detail/:id?", scicat.findPublication);
+  app.get("/scicat/Publication/count/:params?", scicat.countPublication);
   app.get("/scicat/Publication/:limits?", scicat.getPublication);
   app.put('/scicat/oai/Publication', scicat.putPublication);
   //app.get('/scicat/Publication/:id', scicat.getPublication);

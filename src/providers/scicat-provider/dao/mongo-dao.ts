@@ -149,6 +149,23 @@ export class MongoConnector {
     });
   }
 
+  public countPublication(parameters: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
+
+    let Publication = this.db.collection(this.collectionName);
+    return new Promise((resolve: any, reject: any) => {
+      Publication.countDocuments(parameters, {}, function(err, count) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(count);
+        }
+      });
+    });
+  }
+
   // supports skip and limit
   public getPublication(query: any): Promise<any> {
     if (!this.db) {

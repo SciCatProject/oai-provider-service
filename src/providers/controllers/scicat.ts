@@ -34,7 +34,6 @@ const provider = new CoreOaiProvider(
  * @param {Response} res
  */
 export let oai = (req: Request, res: Response) => {
-
   res.set("Content-Type", "text/xml");
   logger.debug("Request:", req.query);
   switch (req.query.verb) {
@@ -143,30 +142,50 @@ export let putPublication = (req: Request, res: Response) => {
     });
 };
 
+export let countPublication = (req: Request, res: Response) => {
+  logger.debug("Count publications request.");
+  const dao = MongoConnector.getInstance();
+  dao
+    .countPublication(null)
+    .then(count => {
+      res.send({ count });
+    })
+    .catch(oaiError => {
+      res.status(500);
+      res.send(oaiError);
+    });
+};
+
 // is commonly a cross origin request
 export let getPublication = (req: Request, res: Response) => {
-  logger.debug("Get publications request. ", req.query.limits);
-  const limits = req.query.limits;
+  logger.debug("Get publications request. ", req.params.limits);
+
+  const limits = req.params.limits;
   let params = null;
-  if(limits) {
+  if (limits) {
     // decode limits string and convert to JSON
-    const parts = decodeURI(limits).replace(/[()]/g, "").replace(/"/g, '\\"')
-      .replace(/&/g, '","').replace(/=/g,'":"');
+    const parts = decodeURIComponent(limits)
+      .replace(/[()]/g, "")
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"');
     let partsArr = parts.split(",");
     partsArr.forEach(function(part, index) {
-      this[index] = '"' + this[index].replace(/[:]/g, '":"') + '"';
+      this[index] = '"' + this[index].replace(/[:]/g, ":") + '"';
     }, partsArr);
+
     params = JSON.parse("{" + partsArr.join(",") + "}");
   }
+
   const dao = MongoConnector.getInstance();
   dao
     .getPublication(params)
     .then(response => {
-      res.send(response)
+      res.send(response);
     })
     .catch(oaiError => {
       res.status(500);
-      res.send(oaiError)
+      res.send(oaiError);
     });
 };
 
@@ -179,11 +198,10 @@ export let findPublication = (req: Request, res: Response) => {
   dao
     .findPublication(doi)
     .then(response => {
-      res.send(response)
+      res.send(response);
     })
     .catch(oaiError => {
       res.status(500);
-      res.send(oaiError)
+      res.send(oaiError);
     });
 };
-

@@ -149,6 +149,23 @@ export class MongoConnector {
     });
   }
 
+  public countPublication(parameters: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
+
+    let Publication = this.db.collection(this.collectionName);
+    return new Promise((resolve: any, reject: any) => {
+      Publication.countDocuments(parameters, {}, function(err, count) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(count);
+        }
+      });
+    });
+  }
+
   // supports skip and limit
   public getPublication(query: any): Promise<any> {
     if (!this.db) {
@@ -158,18 +175,27 @@ export class MongoConnector {
     return new Promise((resolve: any, reject: any) => {
       let skip = 0;
       let limit = 0;
+      let sort: any;
       if (query && query.skip) {
         skip = parseInt(query.skip);
       }
       if (query && query.limit) {
         limit = parseInt(query.limit);
       }
+      if (query && query.sortField) {
+        const sortDirectionInt = query.sortDirection === "asc" ? 1 : -1;
+        sort = '{ "' + query.sortField + '" : ' + sortDirectionInt + '}';
+        sort = JSON.parse(sort);
+      }
+
 
       Publication.find({})
         .skip(skip)
         .limit(limit)
+        .sort(sort)
         .toArray(function(err, result) {
           if (err) {
+            logger.debug("Mongo Error. ", err);
             reject(err);
           } else {
             resolve(result);
@@ -184,7 +210,7 @@ export class MongoConnector {
     }
     let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
-      Publication.findOne({doi: query}, {}, function(err, item) {
+      Publication.findOne({ doi: query }, {}, function(err, item) {
         if (err) {
           reject(err);
         } else {

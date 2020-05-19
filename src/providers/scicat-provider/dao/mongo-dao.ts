@@ -149,6 +149,22 @@ export class MongoConnector {
     });
   }
 
+  public updatePublication(parameters: any): Promise<any> {
+    if (!this.db) {
+      reject("no db connection");
+    }
+    let Publication = this.db.collection(this.collectionName);
+    return new Promise((resolve: any, reject: any) => {
+      Publication.updateOne({ doi: parameters.doi }, {$set: parameters.body }, function(err, item) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(item);
+        }
+      });
+    });
+  }
+
   public countPublication(parameters: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
   CoreOaiProvider,
   EXCEPTION_CODES,
-  ExceptionParams
+  ExceptionParams,
 } from "../core/core-oai-provider";
 import { generateException } from "../core/oai-response";
 import logger from "../../server/logger";
@@ -41,10 +41,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("Identify request.");
       provider
         .identify(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -55,10 +55,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("ListMetadataFormats request.");
       provider
         .listMetadataFormats(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -69,10 +69,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("ListIdentifiers request.");
       provider
         .listIdentifiers(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -83,10 +83,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("ListRecords request.");
       provider
         .listRecords(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -97,10 +97,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("ListSets request.");
       provider
         .listSets(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -110,10 +110,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("GetRecord request.");
       provider
         .getRecord(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -122,7 +122,7 @@ export let oai = (req: Request, res: Response) => {
 
     default:
       const exception: ExceptionParams = {
-        baseUrl: req.protocol + "://" + req.get("host") + req.path
+        baseUrl: req.protocol + "://" + req.get("host") + req.path,
       };
       res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
   }
@@ -133,10 +133,32 @@ export let putPublication = (req: Request, res: Response) => {
   const dao = MongoConnector.getInstance();
   dao
     .putPublication(req.body)
-    .then(response => {
+    .then((response) => {
       res.send(response);
     })
-    .catch(oaiError => {
+    .catch((oaiError) => {
+      res.status(500);
+      res.send(oaiError);
+    });
+};
+
+export let updatePublication = (req: Request, res: Response) => {
+  logger.debug(
+    "Update publication request.",
+    decodeURIComponent(req.params.id),
+  );
+  const dao = MongoConnector.getInstance();
+  const doi = decodeURIComponent(req.params.id);
+  const body = req.body;
+  const params = { doi, body}
+  dao
+    .updatePublication(params)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((oaiError) => {
+      logger.debug(
+        "Failed to update publication.");
       res.status(500);
       res.send(oaiError);
     });
@@ -147,10 +169,10 @@ export let countPublication = (req: Request, res: Response) => {
   const dao = MongoConnector.getInstance();
   dao
     .countPublication(null)
-    .then(count => {
+    .then((count) => {
       res.send({ count });
     })
-    .catch(oaiError => {
+    .catch((oaiError) => {
       res.status(500);
       res.send(oaiError);
     });
@@ -170,7 +192,7 @@ export let getPublication = (req: Request, res: Response) => {
       .replace(/&/g, '","')
       .replace(/=/g, '":"');
     let partsArr = parts.split(",");
-    partsArr.forEach(function(part, index) {
+    partsArr.forEach(function (part, index) {
       this[index] = '"' + this[index].replace(/[:]/g, ":") + '"';
     }, partsArr);
 
@@ -180,10 +202,10 @@ export let getPublication = (req: Request, res: Response) => {
   const dao = MongoConnector.getInstance();
   dao
     .getPublication(params)
-    .then(response => {
+    .then((response) => {
       res.send(response);
     })
-    .catch(oaiError => {
+    .catch((oaiError) => {
       res.status(500);
       res.send(oaiError);
     });
@@ -197,10 +219,10 @@ export let findPublication = (req: Request, res: Response) => {
   const doi = decodeURIComponent(req.params.id);
   dao
     .findPublication(doi)
-    .then(response => {
+    .then((response) => {
       res.send(response);
     })
-    .catch(oaiError => {
+    .catch((oaiError) => {
       res.status(500);
       res.send(oaiError);
     });

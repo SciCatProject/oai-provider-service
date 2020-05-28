@@ -60,8 +60,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
                                     {'dc:type': "dataset"},
                                     {'dc:publisher': record.publisher},
                                     {'dc:rights': this.getRightsMessage(false)},
-                                    {'dc:abstract':  record.abstract},
-                                    {'dc:id':  record._id}],
+                                    ],
                             }]
                     }]
             };

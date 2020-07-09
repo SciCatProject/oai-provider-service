@@ -147,7 +147,7 @@ export let updatePublication = (req: Request, res: Response) => {
     "Update publication request.",
     decodeURIComponent(req.params.id),
   );
-  const dao = MongoConnector.getInstance();
+/*  const dao = MongoConnector.getInstance();
   const doi = decodeURIComponent(req.params.id);
   const body = req.body;
   const params = { doi, body}
@@ -161,7 +161,8 @@ export let updatePublication = (req: Request, res: Response) => {
         "Failed to update publication.");
       res.status(500);
       res.send(oaiError);
-    });
+    });*/
+   res.send();
 };
 
 export let countPublication = (req: Request, res: Response) => {

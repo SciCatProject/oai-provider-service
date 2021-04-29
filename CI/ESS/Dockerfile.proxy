@@ -1,4 +1,4 @@
-FROM node:13-alpine
+FROM node:14-alpine
 ENV http_proxy "http://192.168.1.1:8123"
 ENV https_proxy $http_proxy
 ENV no_proxy "localhost, 127.0.0.1"

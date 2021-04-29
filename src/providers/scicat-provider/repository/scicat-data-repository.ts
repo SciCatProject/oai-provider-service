@@ -1,5 +1,5 @@
 /*
- *  Original work Copyright 2018 Willamette University 
+ *  Original work Copyright 2018 Willamette University
  *  Modified work Copyright 2019 SciCat Organisations
  *
  *  This file is part of OAI-PHM Service.
@@ -62,6 +62,12 @@ export enum METADATA_FORMAT_PANOSC {
   namespace = "http://scicat.esss.se/panosc"
 }
 
+export enum METADATA_FORMAT_OAI_DATACITE {
+  prefix = "oai_datacite",
+  schema = "http://schema.datacite.org/meta/kernel-3/metadata.xsd",
+  namespace = "http://datacite.org/schema/kernel-3"
+}
+
 export enum SETS {
   setspec = "openaire_data",
   setname = "openaire_data"
@@ -98,7 +104,11 @@ export function factory(options = {}): DataRepository {
 
     getMetadataFormats: (identifier: string = undefined) => {
       // Since only DC is supported, safe to ignore the identifier param.
-      return Promise.resolve([METADATA_FORMAT_DC, METADATA_FORMAT_PANOSC]);
+      return Promise.resolve([
+        METADATA_FORMAT_DC,
+        METADATA_FORMAT_PANOSC,
+        METADATA_FORMAT_OAI_DATACITE
+      ]);
     },
 
     /**
@@ -106,8 +116,9 @@ export function factory(options = {}): DataRepository {
      * @param {string} resumptionToken
      * @returns {Promise<never>}
      */
+
     getSets: (identifier: string = undefined) => {
-      return Promise.resolve([SETS ]);
+      return Promise.resolve([SETS]);
     },
 
     /**

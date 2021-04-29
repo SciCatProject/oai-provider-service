@@ -1,70 +1,71 @@
 import logger from "../../../server/logger";
-import { ProviderDCMapper } from "../../core/core-oai-provider";
+import {ProviderDCMapper} from "../../core/core-oai-provider";
+import os = require('os');
 
 export class ScicatDcMapper implements ProviderDCMapper {
-  /**
-   * The Universal Coordinated Time (UTC) date needs to be modifed
-   * to match the local timezone.
-   * @param record the raw data returned by the mongo dao query
-   * @returns {string}
-   */
-  private setTimeZoneOffset(record: any): string {
-    const date = new Date(record.updatedAt);
-    const timeZoneCorrection = new Date(
-      date.getTime() + date.getTimezoneOffset() * -60000
-    );
-    return timeZoneCorrection.toISOString().split(".")[0] + "Z";
-  }
 
-  private getRightsMessage(restricted: boolean): string {
-    if (restricted) {
-      return "Restricted to University users.";
+    /**
+     * The Universal Coordinated Time (UTC) date needs to be modifed
+     * to match the local timezone.
+     * @param record the raw data returned by the mongo dao query
+     * @returns {string}
+     */
+    private setTimeZoneOffset(record: any): string {
+        const date = new Date(record.registeredTime? record.registeredTime: null);
+        const timeZoneCorrection = new Date(date.getTime() + date.getTimezoneOffset() * -60000);
+        timeZoneCorrection.setMilliseconds(0);
+        return timeZoneCorrection.toISOString().split('.')[0] + "Z";
+
     }
-    return "Available to the public.";
-  }
 
-  private createItemRecord(record: any): any {
-    //const updatedAt: string = this.setTimeZoneOffset(record);
-    let item = {
-      record: [
-        {
-          header: [
-            { identifier: record._id.toString() },
-            { setSpec: "openaire_data" },
-            { datestamp: "updatedAt" }
-          ]
-        },
-        {
-          metadata: [
-            {
-              "oai_dc:dc": [
-                {
-                  _attr: {
-                    "xmlns:oai_dc":
-                      "http://www.openarchives.org/OAI/2.0/oai_dc/",
-                    "xmlns:dc": "http://purl.org/dc/elements/1.1/",
-                    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-                    "xsi:schemaLocation":
-                      "http://www.openarchives.org/OAI/2.0/oai_dc/ " +
-                      "http://www.openarchives.org/OAI/2.0/oai_dc.xsd"
-                  }
-                },
-                // ......does it matter what these fields are called?
-                { "dc:title": record.title },
-                { "dc:description": record.dataDescription },
-                { "dc:identifier": record.url },
-                { "dc:creator": record.creator },
-                { "dc:source": record.publisher }, //category?/ source?
-                { "dc:rights": this.getRightsMessage(false) }
-              ] //rights?
-              // .....add more fields here
-            }
-          ]
+    private getRightsMessage(restricted: boolean): string {
+        if (restricted) {
+            return "Restricted to University users."
         }
-      ]
-    };
-    return item;
-  }
+        return "Available to the public."
+    }
+
+    private createItemRecord(record: any): any {
+
+        const updatedAt: string = this.setTimeZoneOffset(record);
+        let item =
+            {
+                record: [
+                    {
+                        'header': [
+                            {'identifier': record.doi},
+                            {'datestamp': updatedAt}
+                        ]
+                    },
+                    {
+                        'metadata': [
+                            {
+                                'oai_dc:dc': [{
+                                    '_attr':
+                                        {
+                                            'xmlns:oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+                                            'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
+                                            'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                                            'xsi:schemaLocation': 'http://www.openarchives.org/OAI/2.0/oai_dc/ ' +
+                                            'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
+                                        }
+                                },
+                                    {'dc:title': record.title},
+                                    {'dc:description':  record.dataDescription},
+                                    {'dc:identifier': record.doi},
+                                    {'dc:identifier': "https://" + os.hostname() + 
+                                    "/detail/" + encodeURIComponent(record.doi)},
+                                    {'dc:date': record.publicationYear},
+                                    {'dc:creator': record.creator},
+                                    {'dc:type': "dataset"},
+                                    {'dc:publisher': record.publisher},
+                                    {'dc:rights': this.getRightsMessage(false)},
+                                    ],
+                            }]
+                    }]
+            };
+        return item;
+    }
 
   public mapOaiDcListRecords(records: any[]): any {
     const list = [];
@@ -106,7 +107,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
         record: [
           {
             header: [
-              { identifier: record.id.toString() },
+              { identifier: record._id.toString() },
               { datestamp: updatedAt }
             ]
           }
@@ -130,7 +131,6 @@ export class ScicatDcMapper implements ProviderDCMapper {
       set: [{ setName: "openaire_data" }, { setSpec: "openaire_data" }]
     };
     list.push(item);
-
     response.ListSets = list;
     return response;
   }

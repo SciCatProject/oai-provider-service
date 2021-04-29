@@ -31,9 +31,9 @@ import {ProviderConfiguration} from "../../core/oai-service";
 export class Configuration implements ProviderConfiguration {
 
     public repositoryName: string = "Scicat Provider";
-    public baseURL: string =  "http://scicat.esss.se/scicat/oai";
+    public baseURL: string =  "http://scitest.esss.lu.se/scicat/oai";
     public protocolVersion: string = '2.0';
-    public adminEmail: string = "gareth.murphy@esss.se";
+    public adminEmail: string = "henrik.johansson@ess.eu";
     public port: number = 3000;
     public description: string = "";
     public deletedRecord: string = DELETED_RECORDS_SUPPORT.NO;

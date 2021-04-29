@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
   CoreOaiProvider,
   EXCEPTION_CODES,
-  ExceptionParams
+  ExceptionParams,
 } from "../core/core-oai-provider";
 import { generateException } from "../core/oai-response";
 import logger from "../../server/logger";
@@ -35,16 +35,16 @@ const provider = new CoreOaiProvider(
  */
 export let oai = (req: Request, res: Response) => {
   res.set("Content-Type", "text/xml");
-
+  logger.debug("Request:", req.query);
   switch (req.query.verb) {
     case "Identify":
       logger.debug("Identify request.");
       provider
         .identify(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -55,10 +55,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("ListMetadataFormats request.");
       provider
         .listMetadataFormats(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -69,10 +69,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("ListIdentifiers request.");
       provider
         .listIdentifiers(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -83,10 +83,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("ListRecords request.");
       provider
         .listRecords(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -94,13 +94,13 @@ export let oai = (req: Request, res: Response) => {
       break;
 
     case "ListSets":
-      logger.debug("ListSet request.");
+      logger.debug("ListSets request.");
       provider
         .listSets(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -110,10 +110,10 @@ export let oai = (req: Request, res: Response) => {
       logger.debug("GetRecord request.");
       provider
         .getRecord(req.query)
-        .then(response => {
+        .then((response) => {
           res.send(response);
         })
-        .catch(oaiError => {
+        .catch((oaiError) => {
           res.status(500);
           res.send(oaiError);
         });
@@ -122,37 +122,108 @@ export let oai = (req: Request, res: Response) => {
 
     default:
       const exception: ExceptionParams = {
-        baseUrl: req.protocol + "://" + req.get("host") + req.path
+        baseUrl: req.protocol + "://" + req.get("host") + req.path,
       };
       res.send(generateException(exception, EXCEPTION_CODES.BAD_VERB));
   }
 };
 
 export let putPublication = (req: Request, res: Response) => {
+  logger.debug("Put publication request.");
   const dao = MongoConnector.getInstance();
   dao
     .putPublication(req.body)
-    .then(response => {
+    .then((response) => {
       res.send(response);
     })
-    .catch(oaiError => {
+    .catch((oaiError) => {
       res.status(500);
       res.send(oaiError);
     });
 };
 
-// is commonly cross a cross origin request
-export let getPublication = (req: Request, res: Response) => {
-  logger.debug("Get publications request.");
+export let updatePublication = (req: Request, res: Response) => {
+  logger.debug(
+    "Update publication request.",
+    decodeURIComponent(req.params.id),
+  );
   const dao = MongoConnector.getInstance();
+  const doi = decodeURIComponent(req.params.id);
+  const body = req.body;
+  const params = { doi, body}
   dao
-    .getPublication({doi: req.params.id})
-    .then(response => {
-      res.jsonp(response);
+    .updatePublication(params)
+    .then((response) => {
+      res.send(response);
     })
-    .catch(oaiError => {
+    .catch((oaiError) => {
+      logger.debug(
+        "Failed to update publication.");
       res.status(500);
-      res.jsonp(oaiError);
+      res.send(oaiError);
     });
 };
 
+export let countPublication = (req: Request, res: Response) => {
+  logger.debug("Count publications request.");
+  const dao = MongoConnector.getInstance();
+  dao
+    .countPublication(null)
+    .then((count) => {
+      res.send({ count });
+    })
+    .catch((oaiError) => {
+      res.status(500);
+      res.send(oaiError);
+    });
+};
+
+// is commonly a cross origin request
+export let getPublication = (req: Request, res: Response) => {
+  logger.debug("Get publications request. ", req.params.limits);
+
+  const limits = req.params.limits;
+  let params = null;
+  if (limits) {
+    // decode limits string and convert to JSON
+    const parts = decodeURIComponent(limits)
+      .replace(/[()]/g, "")
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"');
+    let partsArr = parts.split(",");
+    partsArr.forEach(function (part, index) {
+      this[index] = '"' + this[index].replace(/[:]/g, ":") + '"';
+    }, partsArr);
+
+    params = JSON.parse("{" + partsArr.join(",") + "}");
+  }
+
+  const dao = MongoConnector.getInstance();
+  dao
+    .getPublication(params)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((oaiError) => {
+      res.status(500);
+      res.send(oaiError);
+    });
+};
+
+// is commonly a cross origin request
+export let findPublication = (req: Request, res: Response) => {
+  logger.debug("Find publications request.", decodeURIComponent(req.params.id));
+  // need to decode doi parameter from URL
+  const dao = MongoConnector.getInstance();
+  const doi = decodeURIComponent(req.params.id);
+  dao
+    .findPublication(doi)
+    .then((response) => {
+      res.send(response);
+    })
+    .catch((oaiError) => {
+      res.status(500);
+      res.send(oaiError);
+    });
+};

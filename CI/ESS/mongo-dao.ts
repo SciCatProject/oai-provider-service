@@ -1,5 +1,4 @@
 import logger from "../../../server/logger";
-import { getCredentials, hasCredentialsFile } from "../../core/credentials";
 import { reject } from "bluebird";
 import { MongoClient } from "mongodb";
 
@@ -10,7 +9,7 @@ import { MongoClient } from "mongodb";
  */
 export class MongoConnector {
   public static instance: MongoConnector;
-  public db: null;
+  public db = null;
 
   private constructor() {
     logger.debug("Setting up the mongo connection.");
@@ -21,8 +20,7 @@ export class MongoConnector {
     /*if (hasCredentialsFile(credFile)) {
       const creds = getCredentials(credFile);
     }*/
-    //const url = "mongodb://mongodb-production-mongodb.production:27017";
-    const url = "mongodb://local-mongodb-mongodb.dev:27017";
+    const url = `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT}`;
 
     MongoClient.connect(url, (err, client) => {
       if (err) {
@@ -30,7 +28,7 @@ export class MongoConnector {
         logger.error("failed to connect", err);
         this.db = null;
       }
-      this.db = client.db("dacat");
+      this.db = client.db(process.env.DATABASE);
     });
   }
 

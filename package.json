@@ -22,7 +22,7 @@
     "@types/lodash": "^4.14.170",
     "@types/mysql": "^2.15.2",
     "@types/pino": "^4.7.1",
-    "@types/xml": "^1.0.2",
+    "@types/xml": "^1.0.6",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",

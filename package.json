@@ -25,7 +25,7 @@
     "@types/xml": "^1.0.6",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.3",
-    "cookie-parser": "^1.4.3",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^8.6.0",
     "express": "^4.16.2",

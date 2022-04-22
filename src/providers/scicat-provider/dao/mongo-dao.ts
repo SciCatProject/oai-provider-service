@@ -1,5 +1,4 @@
 import logger from "../../../server/logger";
-import { getCredentials, hasCredentialsFile } from "../../core/credentials";
 import { reject } from "bluebird";
 import { MongoClient } from "mongodb";
 
@@ -17,13 +16,10 @@ export class MongoConnector {
   private constructor() {
     logger.debug("Setting up the mongo connection.");
 
-    // Get path from the environment.
-    // const credFile = process.env.SCICAT_CONFIGURATION;
-
-    /*if (hasCredentialsFile(credFile)) {
-      const creds = getCredentials(credFile);
-    }*/
-    const url = process.env.DB_HOST + ":" + process.env.DB_PORT;
+    const user_url = process.env.DB_USER ? process.env.DB_USER + (
+      process.env.DB_PASS? ":" + process.env.DB_PASS : "" ) + "@" : ""
+    const db_url = process.env.DATABASE ? "/" + process.env.DATABASE: "" 
+    const url = process.env.DB_URL || (user_url + process.env.DB_HOST + ":" + process.env.DB_PORT + db_url);
     this.dbName = process.env.DATABASE;
     this.collectionName = process.env.COLLECTION;
 
@@ -32,7 +28,8 @@ export class MongoConnector {
         logger.error("failed to connect", err);
         this.db = null;
       }
-      this.db = client.db(this.dbName);
+      if (!process.env.DB_URL)
+        this.db = client.db(this.dbName);
     });
   }
 

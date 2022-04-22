@@ -172,7 +172,7 @@ export class OpenaireMapper implements ProviderDCMapper {
         record: [
           {
             header: [
-              { identifier: record.id.toString() },
+              { identifier: record._id.toString() },
               { datestamp: updatedAt }
             ]
           }

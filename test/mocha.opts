@@ -2,3 +2,6 @@
 --require source-map-support/register
 --full-trace
 --timeout 20000
+--exclude test/fixtures/**.ts
+--exit
+-r dotenv/config . dotenv_config_path=./test/.env

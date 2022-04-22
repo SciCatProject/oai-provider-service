@@ -1,13 +1,13 @@
 FROM node:14-alpine
 
-# This Dockerfile assumes that you have built production code using npm run compile
+WORKDIR /home/node/app
+RUN chown -R node:node /home/node/app
 
-EXPOSE 3005
-WORKDIR /
+USER node
+COPY package*.json /home/node/app/
+COPY . /home/node/app/
 
-COPY package.json /
-ENV NODE_ENV=production
-RUN npm prune
-COPY ./dist /
-COPY ./node_modules /node_modules
-CMD ["node", "index.js"]
+RUN npm ci
+RUN npm run compile
+
+CMD ["npm", "start"]

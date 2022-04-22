@@ -2,70 +2,70 @@ import logger from "../../../server/logger";
 import {ProviderDCMapper} from "../../core/core-oai-provider";
 import os = require('os');
 
-export class ScicatDcMapper implements ProviderDCMapper {
+export class ScicatDcMapper extends ProviderDCMapper {
 
-    /**
-     * The Universal Coordinated Time (UTC) date needs to be modifed
-     * to match the local timezone.
-     * @param record the raw data returned by the mongo dao query
-     * @returns {string}
-     */
-    private setTimeZoneOffset(record: any): string {
-        const date = new Date(record.registeredTime? record.registeredTime: null);
-        const timeZoneCorrection = new Date(date.getTime() + date.getTimezoneOffset() * -60000);
-        timeZoneCorrection.setMilliseconds(0);
-        return timeZoneCorrection.toISOString().split('.')[0] + "Z";
+  /**
+   * The Universal Coordinated Time (UTC) date needs to be modifed
+   * to match the local timezone.
+   * @param record the raw data returned by the mongo dao query
+   * @returns {string}
+   */
+  private setTimeZoneOffset(record: any): string {
+      const date = new Date(record.registeredTime? record.registeredTime: null);
+      const timeZoneCorrection = new Date(date.getTime() + date.getTimezoneOffset() * -60000);
+      timeZoneCorrection.setMilliseconds(0);
+      return timeZoneCorrection.toISOString().split('.')[0] + "Z";
 
-    }
+  }
 
-    private getRightsMessage(restricted: boolean): string {
-        if (restricted) {
-            return "Restricted to University users."
-        }
-        return "Available to the public."
-    }
+  private getRightsMessage(restricted: boolean): string {
+      if (restricted) {
+          return "Restricted to University users."
+      }
+      return "Available to the public."
+  }
 
-    private createItemRecord(record: any): any {
+  private createItemRecord(record: any): any {
 
-        const updatedAt: string = this.setTimeZoneOffset(record);
-        let item =
-            {
-                record: [
-                    {
-                        'header': [
-                            {'identifier': record.doi},
-                            {'datestamp': updatedAt}
-                        ]
-                    },
-                    {
-                        'metadata': [
-                            {
-                                'oai_dc:dc': [{
-                                    '_attr':
-                                        {
-                                            'xmlns:oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-                                            'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
-                                            'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-                                            'xsi:schemaLocation': 'http://www.openarchives.org/OAI/2.0/oai_dc/ ' +
-                                            'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
-                                        }
-                                },
-                                    {'dc:title': record.title},
-                                    {'dc:description':  record.dataDescription},
-                                    {'dc:identifier': record.doi},
-                                    {'dc:identifier': "https://" + os.hostname() + 
-                                    "/detail/" + encodeURIComponent(record.doi)},
-                                    {'dc:date': record.publicationYear},
-                                    {'dc:creator': record.creator},
-                                    {'dc:type': "dataset"},
-                                    {'dc:publisher': record.publisher},
-                                    {'dc:rights': this.getRightsMessage(false)},
-                                    ],
-                            }]
-                    }]
-            };
-        return item;
-    }
+      const updatedAt: string = this.setTimeZoneOffset(record);
+      let item =
+          {
+              record: [
+                  {
+                      'header': [
+                          {'identifier': record[this.collection_id]},
+                          {'datestamp': updatedAt}
+                      ]
+                  },
+                  {
+                      'metadata': [
+                          {
+                              'oai_dc:dc': [{
+                                  '_attr':
+                                      {
+                                          'xmlns:oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
+                                          'xmlns:dc': 'http://purl.org/dc/elements/1.1/',
+                                          'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+                                          'xsi:schemaLocation': 'http://www.openarchives.org/OAI/2.0/oai_dc/ ' +
+                                          'http://www.openarchives.org/OAI/2.0/oai_dc.xsd'
+                                      }
+                              },
+                                  {'dc:title': record.title},
+                                  {'dc:description':  record.dataDescription},
+                                  {'dc:identifier': record[this.collection_id]},
+                                  {'dc:identifier': "https://" + os.hostname() + 
+                                  "/detail/" + encodeURIComponent(record[this.collection_id])},
+                                  {'dc:date': record.publicationYear},
+                                  {'dc:creator': record.creator},
+                                  {'dc:type': "dataset"},
+                                  {'dc:publisher': record.publisher},
+                                  {'dc:rights': this.getRightsMessage(false)},
+                                  ],
+                          }]
+                  }]
+          };
+      return item;
+  }
 
   public mapOaiDcListRecords(records: any[]): any {
     const list = [];
@@ -91,7 +91,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
     }
 
     let item = this.createItemRecord(record);
-    logger.debug("Got item with id " + record._id + ", title: " + record.title);
+    logger.debug("Got item with id " + record[this.collection_id] + ", title: " + record.title);
     return item;
   }
 
@@ -107,7 +107,7 @@ export class ScicatDcMapper implements ProviderDCMapper {
         record: [
           {
             header: [
-              { identifier: record._id.toString() },
+              { identifier: record[this.collection_id].toString() },
               { datestamp: updatedAt }
             ]
           }

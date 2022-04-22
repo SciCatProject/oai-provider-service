@@ -1,7 +1,8 @@
 import logger from "../../../server/logger";
 import { ProviderDCMapper } from "../../core/core-oai-provider";
 
-export class OpenaireMapper implements ProviderDCMapper {
+export class OpenaireMapper extends ProviderDCMapper {
+
   /**
    * The Universal Coordinated Time (UTC) date needs to be modifed
    * to match the local timezone.
@@ -32,7 +33,7 @@ export class OpenaireMapper implements ProviderDCMapper {
             {
               identifier: [
                 { _attr: { identifierType: "doi" } },
-                record._id.toString()
+                record[this.collection_id].toString()
               ]
             },
             { setSpec: "openaire_data" },
@@ -62,7 +63,7 @@ export class OpenaireMapper implements ProviderDCMapper {
                 {
                   "datacite:identifier": [
                     { _attr: { identifierType: "URL" } },
-                    "https://doi.org/"+record._id.toString()
+                    "https://doi.org/"+record[this.collection_id].toString()
                   ]
                 },
                 {
@@ -156,7 +157,7 @@ export class OpenaireMapper implements ProviderDCMapper {
     }
 
     let item = this.createItemRecord(record);
-    logger.debug("Got item with id " + record._id + ", title: " + record.title);
+    logger.debug("Got item with id " + record[this.collection_id] + ", title: " + record.title);
     return item;
   }
 
@@ -172,7 +173,7 @@ export class OpenaireMapper implements ProviderDCMapper {
         record: [
           {
             header: [
-              { identifier: record._id.toString() },
+              { identifier: record[this.collection_id].toString() },
               { datestamp: updatedAt }
             ]
           }

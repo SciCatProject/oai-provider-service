@@ -1,6 +1,7 @@
 import logger from "../../../server/logger";
 import { reject } from "bluebird";
 import { MongoClient } from "mongodb";
+import { getCollectionID } from "../../../server/env";
 
 /**
  * This is the DAO service for Scicat. It uses a mongo connection
@@ -100,7 +101,7 @@ export class MongoConnector {
     let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       const query = {
-        doi: parameters.identifier
+        [`${getCollectionID()}`]: parameters.identifier
         
       };
       Publication.findOne(query, {}, function(err, item) {

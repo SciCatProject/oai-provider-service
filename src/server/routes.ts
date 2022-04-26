@@ -28,7 +28,6 @@ import * as scicat from "../providers/controllers/scicat";
 import * as panosc from "../providers/controllers/panosc";
 import * as openaire from "../providers/controllers/openaire";
 import logger from "./logger";
-import * as auth from "http-auth";
 
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');

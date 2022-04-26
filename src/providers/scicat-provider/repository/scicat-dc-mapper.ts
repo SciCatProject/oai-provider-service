@@ -1,6 +1,5 @@
 import logger from "../../../server/logger";
 import {ProviderDCMapper} from "../../core/core-oai-provider";
-import os = require('os');
 
 export class ScicatDcMapper extends ProviderDCMapper {
 

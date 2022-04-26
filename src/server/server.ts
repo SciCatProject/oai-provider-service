@@ -27,7 +27,6 @@ import express = require("express");
 import { Application } from "express";
 import bodyParser = require("body-parser");
 import http = require("http");
-import os = require("os");
 import logger from "./logger";
 import { getHostConfiguration, hasHostConfigurationFile } from "./host-config";
 import { CorsOptions } from "cors";

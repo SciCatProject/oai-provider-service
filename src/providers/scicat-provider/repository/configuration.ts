@@ -24,7 +24,6 @@
 
 import {DELETED_RECORDS_SUPPORT, HARVESTING_GRANULARITY} from "../../core/core-oai-provider";
 import {ProviderConfiguration} from "../../core/oai-service";
-import os = require('os');
 
 /**
  * module configuration.

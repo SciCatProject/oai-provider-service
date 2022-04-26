@@ -3,6 +3,8 @@ import { ProviderDCMapper } from "../../core/core-oai-provider";
 
 export class ScicatPanoscMapper extends ProviderDCMapper {
 
+  route = process.env.PANOSC_ROUTE || "/panosc/oai";
+
   /**
    * The Universal Coordinated Time (UTC) date needs to be modifed
    * to match the local timezone.

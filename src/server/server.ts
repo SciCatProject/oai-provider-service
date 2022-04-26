@@ -71,7 +71,7 @@ export default class ExpressServer {
     const welcome: any = () => {
       logger.info(
         `******** Up and running in ${process.env.NODE_ENV ||
-          "development"} @: ${os.hostname()} on port: ${port}}***********`
+          "development"} @: ${process.env.BASE_URL} on port: ${port}}***********`
       );
     };
 

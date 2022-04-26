@@ -4,6 +4,8 @@ import os = require('os');
 
 export class ScicatDcMapper extends ProviderDCMapper {
 
+  route = process.env.SCICAT_ROUTE || "/scicat/oai";
+
   /**
    * The Universal Coordinated Time (UTC) date needs to be modifed
    * to match the local timezone.
@@ -53,7 +55,7 @@ export class ScicatDcMapper extends ProviderDCMapper {
                                   {'dc:title': record.title},
                                   {'dc:description':  record.dataDescription},
                                   {'dc:identifier': record[this.collection_id]},
-                                  {'dc:identifier': "https://" + os.hostname() + 
+                                  {'dc:identifier': process.env.BASE_URL + 
                                   "/detail/" + encodeURIComponent(record[this.collection_id])},
                                   {'dc:date': record.publicationYear},
                                   {'dc:creator': record.creator},

@@ -32,7 +32,7 @@ import os = require('os');
 export class Configuration implements ProviderConfiguration {
 
     public repositoryName: string = "Scicat Provider";
-    public baseURL: string =  "https://" + os.hostname() + "/oaipmh/oai/";
+    public baseURL: string =  process.env.BASE_URL;
     public protocolVersion: string = '2.0';
     public adminEmail: string = process.env.ADMIN_USER_EMAIL;
     public port: number = 0;

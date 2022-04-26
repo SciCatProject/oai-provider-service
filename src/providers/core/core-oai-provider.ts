@@ -79,6 +79,7 @@ export enum METADATA_FORMAT_DC {
  * formatted OAI xml.
  */
 export abstract class ProviderDCMapper {
+    route: string;
     get collection_id(): string {return getCollectionID()};
     abstract mapOaiDcListRecords(records: any[]): any;
 
@@ -189,6 +190,7 @@ export class CoreOaiProvider {
         this.oaiService = new OaiService(factory, configuration);
         this.parameters = this.oaiService.getParameters();
         this.mapper = mapper;
+        this.parameters.baseURL += this.mapper.route;
     }
 
     /**

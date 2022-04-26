@@ -3,6 +3,8 @@ import { ProviderDCMapper } from "../../core/core-oai-provider";
 
 export class OpenaireMapper extends ProviderDCMapper {
 
+  route = process.env.OPENAIRE_ROUTE || "/openaire/oai";
+
   /**
    * The Universal Coordinated Time (UTC) date needs to be modifed
    * to match the local timezone.

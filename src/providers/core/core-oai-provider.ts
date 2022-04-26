@@ -24,6 +24,7 @@
  */
 
 import {generateException, generateResponse} from "./oai-response";
+import { getCollectionID } from "../../server/env";
 import {OaiService, ProviderConfiguration} from './oai-service';
 import logger from "../../server/logger";
 
@@ -77,13 +78,15 @@ export enum METADATA_FORMAT_DC {
  * Interface for the class that maps between DAO data and
  * formatted OAI xml.
  */
-export interface ProviderDCMapper {
-    mapOaiDcListRecords(records: any[]): any;
+export abstract class ProviderDCMapper {
+    route: string;
+    get collection_id(): string {return getCollectionID()};
+    abstract mapOaiDcListRecords(records: any[]): any;
 
-    mapOaiDcGetRecord(records: any): any;
+    abstract mapOaiDcGetRecord(records: any): any;
 
-    mapOaiDcListIdentifiers(records: any[]): any;
-    mapOaiDcListSets(records: any[]): any;
+    abstract mapOaiDcListIdentifiers(records: any[]): any;
+    abstract mapOaiDcListSets(records: any[]): any;
 
 }
 
@@ -187,6 +190,7 @@ export class CoreOaiProvider {
         this.oaiService = new OaiService(factory, configuration);
         this.parameters = this.oaiService.getParameters();
         this.mapper = mapper;
+        this.parameters.baseURL += this.mapper.route;
     }
 
     /**

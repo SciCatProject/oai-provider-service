@@ -20,3 +20,8 @@ jobs:
           cp CI/ESS/.env production/.env
           npm ci
           npm run compile
+
+      - name: Test
+        run: |
+          npm ci --also=dev
+          npm run test

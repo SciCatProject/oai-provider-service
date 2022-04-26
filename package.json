@@ -12,7 +12,7 @@
     "start": "cd dist && NODE_ENV=production node index",
     "compile": "gulp dist-clean && gulp build && gulp copy-production",
     "dev": "gulp build && gulp copy && cd dist && node index | pino -o 'short'",
-    "test": "node build.js && mocha test/**/*.ts --exit"
+    "test": "node build.js && mocha 'test/**/*.ts'"
   },
   "dependencies": {
     "@types/bluebird": "^3.5.36",
@@ -50,8 +50,10 @@
     "gulp": "^4.0.0",
     "gulp-typescript": "^4.0.1",
     "gulp-watch": "^5.0.1",
+    "jsdom": "^19.0.0",
     "mocha": "^4.0.1",
     "shelljs": "^0.8.5",
+    "sinon": "^13.0.2",
     "source-map-support": "^0.4.18",
     "supertest": "^3.0.0",
     "ts-node": "^4.1.0",

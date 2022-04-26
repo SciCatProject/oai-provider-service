@@ -1,7 +1,10 @@
 import logger from "../../../server/logger";
 import { ProviderDCMapper } from "../../core/core-oai-provider";
 
-export class ScicatPanoscMapper implements ProviderDCMapper {
+export class ScicatPanoscMapper extends ProviderDCMapper {
+
+  route = process.env.PANOSC_ROUTE || "/panosc/oai";
+
   /**
    * The Universal Coordinated Time (UTC) date needs to be modifed
    * to match the local timezone.
@@ -29,7 +32,7 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
       record: [
         {
           header: [
-            { identifier: record._id.toString() },
+            { identifier: record[this.collection_id].toString() },
             { setSpec: "openaire_data" },
             { datestamp: "updatedAt" }
           ]
@@ -49,7 +52,7 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
                       "https://raw.githubusercontent.com/panosc-eu/fair-data-api/master/panosc.xsd"
                   }
                 },
-                { "panosc:id": record.doi },
+                { "panosc:id": record[this.collection_id] },
                 { "panosc:name": record.title },
                 { "panosc:description": record.dataDescription },
                 { "panosc:owner": record.creator },
@@ -97,7 +100,7 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
     }
 
     let item = this.createItemRecord(record);
-    logger.debug("Got item with id " + record._id + ", title: " + record.title);
+    logger.debug("Got item with id " + record[this.collection_id] + ", title: " + record.title);
     return item;
   }
 
@@ -113,7 +116,7 @@ export class ScicatPanoscMapper implements ProviderDCMapper {
         record: [
           {
             header: [
-              { identifier: record.id.toString() },
+              { identifier: record[this.collection_id].toString() },
               { datestamp: updatedAt }
             ]
           }

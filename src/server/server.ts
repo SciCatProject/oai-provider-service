@@ -27,7 +27,6 @@ import express = require("express");
 import { Application } from "express";
 import bodyParser = require("body-parser");
 import http = require("http");
-import os = require("os");
 import logger from "./logger";
 import { getHostConfiguration, hasHostConfigurationFile } from "./host-config";
 import { CorsOptions } from "cors";
@@ -71,7 +70,7 @@ export default class ExpressServer {
     const welcome: any = () => {
       logger.info(
         `******** Up and running in ${process.env.NODE_ENV ||
-          "development"} @: ${os.hostname()} on port: ${port}}***********`
+          "development"} @: ${process.env.BASE_URL} on port: ${port}}***********`
       );
     };
 

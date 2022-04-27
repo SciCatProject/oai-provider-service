@@ -31,6 +31,11 @@ import logger from "./logger";
 
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
+  app.get('/', (req, res) => {
+    const uptime = process.uptime() * 1000;
+    return res.send(
+        { "started": new Date(Date.now() - uptime).toISOString(), "uptime": +uptime.toFixed(3) });
+  });
   app.get('/scicat/oai', scicat.oai);
   app.get("/scicat/Publication/detail/:id?", scicat.findPublication);
   app.get("/scicat/Publication/count/:params?", scicat.countPublication);

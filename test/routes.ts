@@ -94,4 +94,12 @@ describe(`Test returned xmls`, () => {
     });
   });
 
+  it('test healthcheck', async () => {
+    const response1 = await request(Server).get('/');
+    const response2 = await request(Server).get('/');
+    expect(Date.parse(response1.body.started)).to.be.not.NaN;
+    expect(response1.body.started).to.be.eql(response2.body.started);
+    expect(response2.body.uptime).to.be.greaterThan(response1.body.uptime);
+  });
+
 });

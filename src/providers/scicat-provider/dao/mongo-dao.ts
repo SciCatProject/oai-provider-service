@@ -24,13 +24,12 @@ export class MongoConnector {
     this.dbName = process.env.DATABASE;
     this.collectionName = process.env.COLLECTION;
 
-    MongoClient.connect("mongodb://" + url, (err, client) => {
+    MongoClient.connect("mongodb://" + url, { useUnifiedTopology: true }, (err, client) => {
       if (err) {
         logger.error("failed to connect", err);
         this.db = null;
       }
-      if (!process.env.DB_URL)
-        this.db = client.db(this.dbName);
+      this.db = client.db(this.dbName);
     });
   }
 

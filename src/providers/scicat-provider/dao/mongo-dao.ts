@@ -50,13 +50,13 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public recordsQuery(parameters: any): Promise<any> {
+  public recordsQuery(parameters: any, filter: MongoClient.filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
-      Publication.find().toArray(function(err, items) {
+      Publication.find(filter).toArray(function(err, items) {
         if (err) {
           reject(err);
         } else {
@@ -71,14 +71,14 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public identifiersQuery(parameters: any): Promise<any> {
+  public identifiersQuery(parameters: any, filter: MongoClient.filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
       // need to add relevant date to projection
-      Publication.find({}, { _id: 1 }).toArray(function(err, items) {
+      Publication.find(filter, { _id: 1 }).toArray(function(err, items) {
         if (err) {
           reject(err);
         } else {
@@ -93,15 +93,16 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public getRecord(parameters: any): Promise<any> {
+  public getRecord(parameters: any, filter: MongoClient.filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
     return new Promise((resolve: any, reject: any) => {
-      const query = {
-        [`${getCollectionID()}`]: parameters.identifier
-        
+      const query = {$and: [
+        {[`${getCollectionID()}`]: parameters.identifier},
+        filter,
+      ]
       };
       Publication.findOne(query, {}, function(err, item) {
         if (err) {
@@ -202,7 +203,7 @@ export class MongoConnector {
       }
 
 
-      Publication.find({})
+      Publication.find()
         .skip(skip)
         .limit(limit)
         .sort(sort)

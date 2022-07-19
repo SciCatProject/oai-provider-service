@@ -87,7 +87,9 @@ describe(`Test returned xmls`, () => {
               oaipmh.removeChild(responseDate);
               expect(oaipmh.outerHTML)
                 .to.eql(fixtures[format][test.method]);
-                done();
+              if (test.mock)
+                expect(dbMock[test.mock].args[0][1]).to.be.eql({status: "registered"})
+              done();
             }).catch(done);
           });
       });

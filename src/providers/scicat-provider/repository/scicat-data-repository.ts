@@ -75,6 +75,7 @@ export enum SETS {
 
 export function factory(options = {}): DataRepository {
   const dao: MongoConnector = MongoConnector.getInstance();
+  const filter = {status: "registered"}
 
   return Object.freeze({
     /**
@@ -93,7 +94,7 @@ export function factory(options = {}): DataRepository {
      * @returns {Promise<any>} Resolves with a {@link record}
      */
     getRecord: (parameters: any) => {
-      return dao.getRecord(parameters);
+      return dao.getRecord(parameters, filter);
     },
 
     /**
@@ -128,7 +129,7 @@ export function factory(options = {}): DataRepository {
      * @returns {Promise<any>} an array of {@link record}
      */
     getIdentifiers: (parameters: any) => {
-      return dao.identifiersQuery(parameters);
+      return dao.identifiersQuery(parameters, filter);
     },
 
     /**
@@ -138,7 +139,7 @@ export function factory(options = {}): DataRepository {
      * @returns {Promise<any>} an array of {@link record}
      */
     getRecords: (parameters: any) => {
-      return dao.recordsQuery(parameters);
+      return dao.recordsQuery(parameters, filter);
     }
   });
 }

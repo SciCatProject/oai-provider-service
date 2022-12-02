@@ -3,8 +3,7 @@ name: Deploy
 on:
   push:
     branches: 
-    - develop
-    - uniform-deployment-scripts # Temporary add deployment while setting up the script!!
+    - master
 
 jobs:
   deploy:

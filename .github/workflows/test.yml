@@ -4,13 +4,14 @@ on:
   pull_request:
     branches: 
       - develop
+      
 jobs:
   test:
     name: Run tests
     runs-on: ubuntu-latest
     steps:  
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Cache node_modules
         id: cache-node-modules
@@ -23,8 +24,12 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci
 
+      - name: Build
+        run: |
+          cp CI/ESS/.env production/.env
+          npm run compile
+
       - name: Test
         run: |
-          npm run lint
+          npm ci --also=dev
           npm run test
-          npm run build --configuration=essprod

@@ -10,18 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      
-      - name: Build
-        run: |
-          cp CI/ESS/.env production/.env
-          npm ci
-          npm run compile
-
       - name: Test
         run: |
-          npm ci --also=dev
-          npm run test
+          docker-compose -f docker-compose.test.yaml up --build --no-deps --abort-on-container-exit --exit-code-from oaipmh
+          docker-compose -f docker-compose.test.yaml down

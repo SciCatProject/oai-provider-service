@@ -190,7 +190,6 @@ export class MongoConnector {
       let skip = 0;
       let limit = 0;
       let sort: any;
-      let project: {};
       if (query && query.skip) {
         skip = parseInt(query.skip);
       }
@@ -203,7 +202,7 @@ export class MongoConnector {
         sort = JSON.parse(sort);
       }
 
-      this.projectFields(query, project);
+      const project = this.projectFields(query);
 
       Publication.find()
         .skip(skip)
@@ -221,7 +220,8 @@ export class MongoConnector {
     });
   }
 
-  private projectFields(query: any, project: {}) {
+  private projectFields(query: any) {
+    const project = {}
     if (query && query.excludeFields) {
       query.excludeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 0, previousValue), project);
     }
@@ -229,6 +229,7 @@ export class MongoConnector {
     if (query && query.includeFields) {
       query.includeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 1, previousValue), project);
     }
+    return project
   }
 
   public findPublication(query: any): Promise<any> {

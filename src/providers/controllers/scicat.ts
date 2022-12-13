@@ -10,7 +10,6 @@ import { factory } from "../scicat-provider/repository/scicat-data-repository";
 import { Configuration } from "../scicat-provider/repository/configuration";
 import { ScicatDcMapper } from "../scicat-provider/repository/scicat-dc-mapper";
 import { MongoConnector } from "../scicat-provider/dao/mongo-dao"; // only for put method
-import { parseParams } from "./misc";
 
 /**
  * This is a CoreOaiProvider instance configured for the sample repository module.
@@ -214,3 +213,22 @@ export let findPublication = (req: Request, res: Response) => {
       res.send(oaiError);
     });
 };
+
+export const parseParams = (limits: string) => {
+  let params = null;
+  if (limits) {
+    // decode limits string and convert to JSON
+    const parts = decodeURIComponent(limits)
+      .replace(/[()]/g, "")
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"');
+    let partsArr = parts.split(",");
+    partsArr.forEach(function (part, index) {
+      this[index] = '"' + this[index].replace(/[:]/g, ":") + '"';
+    }, partsArr);
+
+    params = JSON.parse("{" + partsArr.join(",") + "}");
+  }
+  return params;
+}

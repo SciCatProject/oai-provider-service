@@ -14,8 +14,7 @@ describe(`Mongo dao`, () => {
       excludeFields: 'thumbnail|doi',
       includeFields: 'publisher|title'
     }
-    const project = {};
-    MongoConnector.prototype['projectFields'](params, project)
+    const project = MongoConnector.prototype['projectFields'](params)
     expect(project).to.eql(
       {thumbnail: 0, doi: 0, publisher: 1, title: 1})
   })

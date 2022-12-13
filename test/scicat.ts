@@ -1,6 +1,6 @@
 // import 'mocha';
 import { expect } from 'chai';
-import { parseParams } from '../src/providers/controllers/misc';
+import { parseParams } from '../src/providers/controllers/scicat';
 
 
 describe(`Scicat ts`, () => {

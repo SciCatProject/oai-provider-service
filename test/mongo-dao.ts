@@ -1,4 +1,3 @@
-import 'mocha';
 import { expect } from 'chai';
 import { MongoConnector } from '../src/providers/scicat-provider/dao/mongo-dao';
 

@@ -190,6 +190,7 @@ export class MongoConnector {
       let skip = 0;
       let limit = 0;
       let sort: any;
+      let project: {};
       if (query && query.skip) {
         skip = parseInt(query.skip);
       }
@@ -202,11 +203,13 @@ export class MongoConnector {
         sort = JSON.parse(sort);
       }
 
+      this.projectFields(query, project);
 
       Publication.find()
         .skip(skip)
         .limit(limit)
         .sort(sort)
+        .project(project)
         .toArray(function(err, result) {
           if (err) {
             logger.debug("Mongo Error. ", err);
@@ -216,6 +219,16 @@ export class MongoConnector {
           }
         });
     });
+  }
+
+  private projectFields(query: any, project: {}) {
+    if (query && query.excludeFields) {
+      query.excludeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 0, previousValue), project);
+    }
+
+    if (query && query.includeFields) {
+      query.includeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 1, previousValue), project);
+    }
   }
 
   public findPublication(query: any): Promise<any> {

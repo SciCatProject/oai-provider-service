@@ -1,4 +1,3 @@
-// import 'mocha';
 import { expect } from 'chai';
 import { parseParams } from '../src/providers/controllers/scicat';
 

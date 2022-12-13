@@ -1,8 +1,7 @@
-import 'mocha';
 import { expect } from 'chai';
 import request from 'supertest';
 import * as jsdom from 'jsdom';
-import {createSandbox, SinonSandbox, SinonStub} from 'sinon';
+import {createSandbox, SinonSandbox} from 'sinon';
 import { MongoConnector } from '../src/providers/scicat-provider/dao/mongo-dao';
 import * as fixtures from './fixtures';
 import { Application } from "express";

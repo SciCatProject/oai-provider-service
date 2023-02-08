@@ -1,32 +1,7 @@
-/*
- *  Copyright 2018 Willamette University
- *
- *  This file is part of OAI-PHM Service.
- *  
- *  @author Michael Spalti
- *
- *  OAI-PHM Service is based on the Modular OAI-PMH Server, University of Helsinki, 
- *  The National Library of Finland.
- *
- *  OAI-PHM Service is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  OAI-PHM Service is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with OAI-PHM Service.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-import 'mocha';
 import { expect } from 'chai';
 import request from 'supertest';
 import * as jsdom from 'jsdom';
-import {createSandbox, SinonSandbox, SinonStub} from 'sinon';
+import {createSandbox, SinonSandbox} from 'sinon';
 import { MongoConnector } from '../src/providers/scicat-provider/dao/mongo-dao';
 import * as fixtures from './fixtures';
 import { Application } from "express";
@@ -35,19 +10,22 @@ import { ProviderDCMapper } from '../src/providers/core/core-oai-provider';
 
 describe(`Test returned xmls`, () => {
   let sandbox: SinonSandbox;
-  let dbMock: SinonStub;
   let Server: Application;
   const env = Object.assign({}, process.env);
 
   before('mock db', () => {
     sandbox = createSandbox();
-    dbMock = sandbox.createStubInstance(MongoConnector);
-    sandbox.stub(MongoConnector, "getInstance").returns(dbMock);
     Server = require("../src").default;
   });
 
-  after('restore', () => {
+  afterEach('restore', async () => {
     sandbox.restore();
+  })
+
+  after('restore', async () => {
+    sandbox.restore();
+    const dbInstance = MongoConnector.getInstance()
+    await dbInstance.db.collection(dbInstance.collectionName).remove();
     delete require.cache[require.resolve("../src")];
     process.env = env;
   })
@@ -65,18 +43,25 @@ describe(`Test returned xmls`, () => {
     {method: 'ListRecords', mock: 'recordsQuery'},
     {method: 'ListIdentifiers', mock: 'identifiersQuery'},
     {method: 'Identify'},
-    {method: 'GetRecord', mock: 'getRecord', return: 'data', identifier: true},
+    {method: 'GetRecord', mock: 'getRecord', identifier: true},
   ]    
+
+  it(`Publish data`, async () => {
+    const postData = await request(Server).post('/scicat/oai/Publication').send(fixtures['doi'].data)
+    expect(postData.body.result).to.be.eql({n: 1, ok: 1})
+  })
+  
   collection_ids.forEach(collection_id => {    
     formats.forEach(format => {
       tests.forEach(test => {
         it(`${collection_id} ${format} ${test.method}`, done => {
-          sandbox.stub(ProviderDCMapper.prototype, 'collection_id').value(collection_id)
+          let spy
           if (test.mock)
-            dbMock[test.mock].resolves(fixtures[collection_id][test.return || 'dataList']);
+            spy = sandbox.spy(MongoConnector.prototype, test.mock)
+          sandbox.stub(ProviderDCMapper.prototype, 'collection_id').value(collection_id)
           var identifier = ""
           if (test.identifier)
-            identifier = `&identifier=${fixtures[collection_id]['data'][collection_id]}`
+            identifier = `&identifier=${fixtures['doi']['data'][collection_id]}`
           request(Server)
             .get(`/${format}/oai?verb=${test.method}${test.mock? "&metadataPrefix=oai_dc": ""}${identifier}`)
             .expect('Content-Type', 'text/xml; charset=utf-8')
@@ -87,8 +72,8 @@ describe(`Test returned xmls`, () => {
               oaipmh.removeChild(responseDate);
               expect(oaipmh.outerHTML)
                 .to.eql(fixtures[format][test.method]);
-              if (test.mock)
-                expect(dbMock[test.mock].args[0][1]).to.be.eql({status: "registered"})
+              if (spy) 
+                expect(spy.args[0][1]).to.be.eql({status: 'registered'})
               done();
             }).catch(done);
           });
@@ -103,5 +88,23 @@ describe(`Test returned xmls`, () => {
     expect(response1.body.started).to.be.eql(response2.body.started);
     expect(response2.body.uptime).to.be.greaterThan(response1.body.uptime);
   });
+
+  it('test get publication', async () => {
+    const getPublication = await request(Server).get('/scicat/Publication')
+    expect(getPublication.body[0]).to.be.eql(fixtures['doi'].data)
+  })
+
+  it('test get publication with excludeFields', async () => {
+    const getPublication = await request(Server).get('/scicat/Publication/(excludeFields%3Dthumbnail%7Cdoi)')
+    expect(getPublication.body[0]).to.not.have.property('thumbnail')
+    expect(getPublication.body[0]).to.not.have.property('doi')
+  })
+
+  it('test get publication with includeFields', async () => {
+    const getPublication = await request(Server).get('/scicat/Publication/(includeFields%3Dthumbnail%7Cdoi)')
+    expect(getPublication.body[0]).to.have.property('thumbnail')
+    expect(getPublication.body[0]).to.have.property('doi')
+    expect(Object.keys(getPublication.body[0])).to.be.eql(['_id', 'doi', 'thumbnail'])
+  })
 
 });

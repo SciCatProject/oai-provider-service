@@ -1,5 +1,5 @@
 const data = {
-        "_id" : "NON_MEANINGFUL_ID",
+        "_id" : "ID",
         "doi" : "ID",
         "creator" : [
                 "CREATOR"
@@ -17,7 +17,7 @@ const data = {
                 "PID"
         ],
         "registeredTime" : "2021-01-16T13:46:43.339Z",
-        "status" : "STATUS",
+        "status" : "registered",
         "scicatUser" : "SCICATUSER",
         "thumbnail" : "THUMBNAIL",
         "relatedPublications" : [

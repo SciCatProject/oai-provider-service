@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+
+  mongodb:
+    image: mongo
+    volumes:
+      - mongodb_data:/data/db
+
+  oaipmh:
+    build: .
+    command: "npm run test"
+
+volumes:
+  mongodb_data:
+    driver: local

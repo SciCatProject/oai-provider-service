@@ -183,21 +183,7 @@ export let getPublication = (req: Request, res: Response) => {
   logger.debug("Get publications request. ", req.params.limits);
 
   const limits = req.params.limits;
-  let params = null;
-  if (limits) {
-    // decode limits string and convert to JSON
-    const parts = decodeURIComponent(limits)
-      .replace(/[()]/g, "")
-      .replace(/"/g, '\\"')
-      .replace(/&/g, '","')
-      .replace(/=/g, '":"');
-    let partsArr = parts.split(",");
-    partsArr.forEach(function (part, index) {
-      this[index] = '"' + this[index].replace(/[:]/g, ":") + '"';
-    }, partsArr);
-
-    params = JSON.parse("{" + partsArr.join(",") + "}");
-  }
+  let params = parseParams(limits);
 
   const dao = MongoConnector.getInstance();
   dao
@@ -227,3 +213,22 @@ export let findPublication = (req: Request, res: Response) => {
       res.send(oaiError);
     });
 };
+
+export const parseParams = (limits: string) => {
+  let params = null;
+  if (limits) {
+    // decode limits string and convert to JSON
+    const parts = decodeURIComponent(limits)
+      .replace(/[()]/g, "")
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"');
+    let partsArr = parts.split(",");
+    partsArr.forEach(function (part, index) {
+      this[index] = '"' + this[index].replace(/[:]/g, ":") + '"';
+    }, partsArr);
+
+    params = JSON.parse("{" + partsArr.join(",") + "}");
+  }
+  return params;
+}

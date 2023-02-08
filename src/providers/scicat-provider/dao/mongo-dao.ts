@@ -202,11 +202,13 @@ export class MongoConnector {
         sort = JSON.parse(sort);
       }
 
+      const project = this.projectFields(query);
 
       Publication.find()
         .skip(skip)
         .limit(limit)
         .sort(sort)
+        .project(project)
         .toArray(function(err, result) {
           if (err) {
             logger.debug("Mongo Error. ", err);
@@ -216,6 +218,18 @@ export class MongoConnector {
           }
         });
     });
+  }
+
+  private projectFields(query: any) {
+    const project = {}
+    if (query && query.excludeFields) {
+      query.excludeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 0, previousValue), project);
+    }
+
+    if (query && query.includeFields) {
+      query.includeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 1, previousValue), project);
+    }
+    return project
   }
 
   public findPublication(query: any): Promise<any> {

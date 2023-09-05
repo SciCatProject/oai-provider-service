@@ -6,7 +6,7 @@
   "license": "GPL-3.0",
   "repository": "https://github.com/hatfieldlibrary/oai-provider-service",
   "engines": {
-    "node": ">=8.9.4"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "start": "cd dist && NODE_ENV=production node index",
@@ -15,7 +15,7 @@
     "test": "node build.js && mocha 'test/**/*.ts'"
   },
   "dependencies": {
-    "@types/bluebird": "^3.5.36",
+    "@types/bluebird": "^3.5.38",
     "@types/cookie-parser": "^1.4.3",
     "@types/dotenv": "^4.0.2",
     "@types/express": "^4.17.13",

@@ -1,10 +1,8 @@
-FROM node:14-alpine
+FROM node:18-alpine
 
 WORKDIR /home/node/app
 COPY package*.json /home/node/app/
 
-RUN chown -R node:node /home/node/app
-USER node
 
 RUN npm config set registry http://registry.npmjs.org/
 RUN npm config set strict-ssl false

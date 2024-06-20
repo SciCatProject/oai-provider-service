@@ -23,7 +23,7 @@
  *  along with OAI-PHM Service.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import pino = require('pino');
+const pino = require('pino');
 
 const logger: any = pino({
   name: process.env.APP_ID,

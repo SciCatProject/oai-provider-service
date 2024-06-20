@@ -23,7 +23,6 @@
  */
 
 var gulp = require("gulp");
-var del = require("del");
 var ts = require("gulp-typescript");
 require('source-map-support').install();
 
@@ -47,8 +46,17 @@ gulp.task("copy-production", function() {
     return gulp.src(["production/.env", "production/host_config.json"])
         .pipe(gulp.dest("dist/server"));
 });
-gulp.task("dist-clean", function() {
-    return del(["dist/**/*", "dist/server/.env"]);
-});
 
+
+const rimraf = require('rimraf');
+
+gulp.task("dist-clean", function(done) {
+
+try {
+  rimraf.sync('dist');
+} catch (err) {
+  console.error('Error deleting files:', err);
+}
+done();
+});
 

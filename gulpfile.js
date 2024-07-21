@@ -51,12 +51,11 @@ gulp.task("copy-production", function() {
 const rimraf = require('rimraf');
 
 gulp.task("dist-clean", function(done) {
-
-try {
-  rimraf.sync('dist');
-} catch (err) {
-  console.error('Error deleting files:', err);
-}
-done();
+  try {
+    rimraf.sync('dist');
+  } catch (err) {
+    console.error('Error deleting files:', err);
+  }
+  done();
 });
 

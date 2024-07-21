@@ -60,7 +60,7 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public async recordsQuery(parameters: any, filter: Filter): Promise<any> {
+  public recordsQuery(parameters: any, filter: Filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -73,12 +73,12 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public async identifiersQuery(parameters: any, filter: Filter): Promise<any> {
+  public identifiersQuery(parameters: any, filter: Filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return await Publication.find(filter).toArray() ;
+    return Publication.find(filter).toArray() ;
   }
 
   /**
@@ -86,7 +86,7 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public async getRecord(parameters: any, filter: Filter): Promise<any> {
+  public getRecord(parameters: any, filter: Filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -96,7 +96,7 @@ export class MongoConnector {
         filter,
       ]
       };
-    return await Publication.findOne(query);
+    return Publication.findOne(query);
   }
 
   private aggregatePublicationQuery(pipeline: any): Promise<any> {
@@ -116,33 +116,32 @@ export class MongoConnector {
     });
   }
 
-  public async putPublication(parameters: any): Promise<any> {
+  public putPublication(parameters: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return await Publication.insertOne(parameters);
+    return Publication.insertOne(parameters);
   }
 
-  public async updatePublication(parameters: any): Promise<any> {
+  public updatePublication(parameters: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return await Publication.updateOne({ doi: parameters.doi }, {$set: parameters.body });
+    return Publication.updateOne({ doi: parameters.doi }, {$set: parameters.body });
   }
 
-  public async countPublication(parameters: any): Promise<any> {
+  public countPublication(parameters: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
-
     let Publication = this.db.collection(this.collectionName);
-    return await Publication.countDocuments(parameters) ;
+    return Publication.countDocuments(parameters) ;
   }
 
   // supports skip and limit
-  public async getPublication(query: any): Promise<any> {
+  public getPublication(query: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -164,7 +163,7 @@ export class MongoConnector {
 
       const project = this.projectFields(query);
 
-      return await Publication.find()
+      return Publication.find()
         .skip(skip)
         .limit(limit)
         .sort(sort)
@@ -184,11 +183,11 @@ export class MongoConnector {
     return project;
   }
 
-  public async findPublication(query: any): Promise<any> {
+  public findPublication(query: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return await Publication.findOne({ doi: query });
+    return Publication.findOne({ doi: query });
   }
 }

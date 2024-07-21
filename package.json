@@ -8,13 +8,13 @@
   "engines": {
     "node": ">=18.0.0"
   },
- "scripts": {
+  "scripts": {
     "clean": "gulp dist-clean",
     "distclean": "gulp dist-clean && gulp build && gulp copy-production",
     "start": "cd dist && NODE_ENV=production node index",
     "compile": "gulp dist-clean && gulp build && gulp copy-production",
     "dev": "gulp build && gulp copy && cd dist && node index | pino -o 'short'",
-    "test": "node build.js && mocha  --extension [\"ts\"] 'test/**/*.ts'"
+    "test": "node build.js && mocha --exit"
   },
   "dependencies": {
     "@types/node": "^20.14.2",
@@ -29,21 +29,22 @@
     "mongodb": "^6.7.0",
     "node": "^20.14.0",
     "pino": "^9.1.0",
+    "tsx": "^4.16.2",
     "xml": "^1.0.1",
     "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
-    "rimraf": "^5.0.7",
-    "source-map-support": "^0.5.21",
     "chai": "^5.1.1",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "jsdom": "^24.1.0",
-    "mocha": "^10.4.0",
+    "mocha": "^10.6.0",
+    "rimraf": "^5.0.7",
     "sinon": "^18.0.0",
+    "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   }
 }

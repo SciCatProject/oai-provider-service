@@ -18,3 +18,13 @@ describe(`Mongo dao`, () => {
       {thumbnail: 0, doi: 0, publisher: 1, title: 1})
   })
 })
+
+describe('Waiting for db connection', function() {
+    it('should wait awhile before continuing', function(done) {
+        this.timeout(61000); // Optional: set timeout for this test to 61 seconds
+        setTimeout(function() {
+            // Your test logic here
+            done();
+        }, 10000); // Wait for 10 seconds
+    });
+});

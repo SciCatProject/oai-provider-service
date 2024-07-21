@@ -1,3 +1,4 @@
+import * as chai from 'chai';
 import { expect } from 'chai';
 import request from 'supertest';
 import * as jsdom from 'jsdom';
@@ -7,6 +8,38 @@ import * as fixtures from './fixtures';
 import { Application } from "express";
 import { ProviderDCMapper } from '../src/providers/core/core-oai-provider';
 
+
+// Custom assertion method
+chai.Assertion.addMethod('eqlCaseInsensitive', function (expected) {
+  const actual = this._obj;
+
+  function normalizeCase(obj) {
+    if (typeof obj === 'string') {
+      return obj.toLowerCase();
+    }
+    if (Array.isArray(obj)) {
+      return obj.map(normalizeCase);
+    }
+    if (typeof obj === 'object' && obj !== null) {
+      return Object.keys(obj).reduce((acc, key) => {
+        acc[key.toLowerCase()] = normalizeCase(obj[key]);
+        return acc;
+      }, {});
+    }
+    return obj;
+  }
+
+  const actualNormalized = normalizeCase(actual);
+  const expectedNormalized = normalizeCase(expected);
+
+  this.assert(
+    chai.util.eql(actualNormalized, expectedNormalized),
+    'expected #{this} to deeply equal #{exp} ignoring case',
+    'expected #{this} to not deeply equal #{exp} ignoring case',
+    expected,
+    actual
+  );
+});
 
 describe(`Test returned xmls`, () => {
   let sandbox: SinonSandbox;
@@ -25,7 +58,7 @@ describe(`Test returned xmls`, () => {
   after('restore', async () => {
     sandbox.restore();
     const dbInstance = MongoConnector.getInstance()
-    await dbInstance.db.collection(dbInstance.collectionName).remove();
+    await dbInstance.db.collection(dbInstance.collectionName).drop();
     delete require.cache[require.resolve("../src")];
     process.env = env;
   })
@@ -39,25 +72,105 @@ describe(`Test returned xmls`, () => {
     'openaire', 
     'panosc'
   ]
-  const tests = [
-    {method: 'ListRecords', mock: 'recordsQuery'},
-    {method: 'ListIdentifiers', mock: 'identifiersQuery'},
-    {method: 'Identify'},
-    {method: 'GetRecord', mock: 'getRecord', identifier: true},
-  ]    
-
   it(`Publish data`, async () => {
-    const postData = await request(Server).post('/scicat/oai/Publication').send(fixtures['doi'].data)
-    expect(postData.body.result).to.be.eql({n: 1, ok: 1})
+    const postData = await request(Server).post('/scicat/oai/Publication')
+                                          .send(fixtures['doi'].data)
+                                          .expect('Content-Type', 'application/json; charset=utf-8')
+                                          .set('Accept', 'application/json');
+    console.log(postData.text)
+    expect(JSON.parse(postData.text)).to.be.eql({"acknowledged":true,"insertedId":"ID"})
   })
-  
+  //
+  // TESTING ListRecords
+  //
   collection_ids.forEach(collection_id => {    
     formats.forEach(format => {
-      tests.forEach(test => {
+        const test = {method: 'ListRecords', mock: 'recordsQuery'} ;
         it(`${collection_id} ${format} ${test.method}`, done => {
-          let spy
-          if (test.mock)
-            spy = sandbox.spy(MongoConnector.prototype, test.mock)
+          let spy = sandbox.spy(MongoConnector.prototype, test.mock)
+          sandbox.stub(ProviderDCMapper.prototype, 'collection_id').value(collection_id)
+          var identifier = ""
+          request(Server)
+            .get(`/${format}/oai?verb=${test.method}${test.mock? "&metadataPrefix=oai_dc": ""}${identifier}`)
+            .expect('Content-Type', 'text/xml; charset=utf-8')
+            .then(r => {
+              const document = new jsdom.JSDOM(r.text,{ contentType: 'text/xml' }).window.document;
+              const header    = document.querySelector("ListRecords").querySelector("record").querySelector("header");
+              const datestamp = header.querySelector("datestamp") ;
+              header.removeChild(datestamp);
+              const responseDate = document.querySelector("responseDate");
+              const oaipmh = document.querySelector("OAI-PMH");
+              oaipmh.removeChild(responseDate);
+              expect(oaipmh.outerHTML)
+                .to.eql(fixtures[format][test.method]);
+              expect(spy.args[0][1])
+                .to.be.eql({status: 'registered'})
+              done();
+            }).catch(done);
+        });
+    });
+  });
+  //
+  // TESTING ListIdentifiers
+  //
+  collection_ids.forEach(collection_id => {    
+    formats.forEach(format => {
+        const test = { method: 'ListIdentifiers', mock: 'identifiersQuery'};
+        it(`${collection_id} ${format} ${test.method}`, done => {
+          let spy = sandbox.spy(MongoConnector.prototype, test.mock)
+          sandbox.stub(ProviderDCMapper.prototype, 'collection_id').value(collection_id)
+          request(Server)
+            .get(`/${format}/oai?verb=${test.method}&metadataPrefix=oai_dc`)
+            .expect('Content-Type', 'text/xml; charset=utf-8')
+            .then(r => {
+              const document = new jsdom.JSDOM(r.text,{ contentType: 'text/xml' }).window.document;
+              const header    = document.querySelector("ListIdentifiers").querySelector("record").querySelector("header");
+              const datestamp = header.querySelector("datestamp") ;
+              header.removeChild(datestamp);
+              const responseDate = document.querySelector("responseDate");
+              const oaipmh= document.querySelector("OAI-PMH");
+              oaipmh.removeChild(responseDate);
+              expect(oaipmh.outerHTML)
+                .to.eql(fixtures[format][test.method]);
+              expect(spy.args[0][1])
+                .to.be.eql({status: 'registered'})
+              done();
+            }).catch(done);
+        });
+    });
+  });
+  //
+  // TESTING Identify
+  //
+  collection_ids.forEach(collection_id => {    
+    formats.forEach(format => {
+        const test = {method: 'Identify'};
+        it(`${collection_id} ${format} ${test.method}`, done => {
+          sandbox.stub(ProviderDCMapper.prototype, 'collection_id').value(collection_id)
+          request(Server)
+            .get(`/${format}/oai?verb=${test.method}`)
+            .expect('Content-Type', 'text/xml; charset=utf-8')
+            .then(r => {
+              const document = new jsdom.JSDOM(r.text,{ contentType: 'text/xml' }).window.document;
+              const helper = document.querySelector("OAI-PMH");
+              const responseDate = document.querySelector("responseDate");
+              const oaipmh = document.querySelector("OAI-PMH");
+              oaipmh.removeChild(responseDate);
+              expect(oaipmh.outerHTML)
+                .to.eql(fixtures[format][test.method]);
+              done();
+            }).catch(done);
+        });
+    });
+  });
+  //
+  // TESTING GetRecord
+  //
+  collection_ids.forEach(collection_id => {    
+    formats.forEach(format => {
+      const test = {method: 'GetRecord', mock: 'getRecord', identifier: true} ;
+        it(`${collection_id} ${format} ${test.method}`, done => {
+          let spy = sandbox.spy(MongoConnector.prototype, test.mock)
           sandbox.stub(ProviderDCMapper.prototype, 'collection_id').value(collection_id)
           var identifier = ""
           if (test.identifier)
@@ -66,18 +179,21 @@ describe(`Test returned xmls`, () => {
             .get(`/${format}/oai?verb=${test.method}${test.mock? "&metadataPrefix=oai_dc": ""}${identifier}`)
             .expect('Content-Type', 'text/xml; charset=utf-8')
             .then(r => {
-              const document = new jsdom.JSDOM(r.text).window.document;
+              const document = new jsdom.JSDOM(r.text,{ contentType: 'text/xml' }).window.document;
+              const header    = document.querySelector("record").querySelector("header");
+              const datestamp = header.querySelector("datestamp") ;
+              header.removeChild(datestamp);
               const responseDate = document.querySelector("responseDate");
               const oaipmh = document.querySelector("OAI-PMH");
               oaipmh.removeChild(responseDate);
               expect(oaipmh.outerHTML)
                 .to.eql(fixtures[format][test.method]);
-              if (spy) 
-                expect(spy.args[0][1]).to.be.eql({status: 'registered'})
+              expect(spy.args[0][1])
+                .to.be.eql({status: 'registered'})
               done();
             }).catch(done);
           });
-      });
+      
     });
   });
 

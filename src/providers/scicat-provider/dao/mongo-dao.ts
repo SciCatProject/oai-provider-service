@@ -2,7 +2,7 @@ import logger from "../../../server/logger";
 import { reject } from "bluebird";
 import { MongoClient } from "mongodb";
 import { getCollectionID } from "../../../server/env";
-
+import { Filter } from 'mongodb';
 /**
  * This is the DAO service for Scicat. It uses a mongo connection
  * to retrieve data.  Database connection parameters are
@@ -13,7 +13,7 @@ export class MongoConnector {
   public db;
   public dbName: string;
   public collectionName: string;
-  public mongoDb: MongoClient ;
+  public mongoDb: MongoClient;
 
   private constructor() {
     logger.debug("Setting up the mongo connection.");
@@ -25,17 +25,19 @@ export class MongoConnector {
     this.dbName = process.env.DATABASE;
     this.collectionName = process.env.COLLECTION;
 
-     const  myUrl = "mongodb://"+url ;
-     this.mongoDb = new MongoClient(  myUrl );
-  
+     const  mongoUrl = "mongodb://"+url;
+     logger.debug("Creating MongoClient with mongoUrl : "+mongoUrl);
+     this.mongoDb = new MongoClient(mongoUrl);
+
      this.mongoDb.connect()
         .then( client => {
-             this.db = client.db(this.dbName) ;
-             logger.debug("Client succefully connected to: "+myUrl) ;
+             this.db = client.db(this.dbName);
+             logger.debug("Client succefully connected to: "+mongoUrl);
+             logger.debug("Client database: "+this.dbName);
            }
         ).catch(
            error => {
-              logger.error("Failed to connect to "+url+" : "+error.message);
+              logger.error("Failed to connect to "+mongoUrl+" : "+error.message);
               this.db = null;
            }
         );
@@ -58,7 +60,7 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public async recordsQuery(parameters: any, filter: any): Promise<any> {
+  public async recordsQuery(parameters: any, filter: Filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -71,12 +73,12 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public async identifiersQuery(parameters: any, filter: any): Promise<any> {
+  public async identifiersQuery(parameters: any, filter: Filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return await Publication.find(filter /* , { _id: 1 } */).toArray() ;
+    return await Publication.find(filter).toArray() ;
   }
 
   /**
@@ -84,7 +86,7 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public async getRecord(parameters: any, filter: any): Promise<any> {
+  public async getRecord(parameters: any, filter: Filter): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -167,7 +169,7 @@ export class MongoConnector {
         .limit(limit)
         .sort(sort)
         .project(project)
-        .toArray() ;
+        .toArray();
   }
 
   private projectFields(query: any) {
@@ -179,7 +181,7 @@ export class MongoConnector {
     if (query && query.includeFields) {
       query.includeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 1, previousValue), project);
     }
-    return project
+    return project;
   }
 
   public async findPublication(query: any): Promise<any> {

@@ -77,7 +77,7 @@ export class MongoConnector {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return Publication.find(filter).toArray() ;
+    return Publication.find(filter , { _id: 1 } ).toArray() ;
   }
 
   /**

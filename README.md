@@ -65,7 +65,7 @@ Add new records to your mongodb instance by HTTP PUT using the following route:
 DAPP_ID | No Idea | oai-pmh-service
 CONNECTOR | (don't change) | mongodb
 ADMIN_USER_EMAIL | E-Mail address of the admin user | none
-LOG_LEVEL | default/error/warning | none  
+LOG_LEVEL | default/error/warning | error  
 
 **Mongo DB variables**
  Key | Description | Default

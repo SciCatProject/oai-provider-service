@@ -1,8 +1,7 @@
 import logger from "../../../server/logger";
 import { reject } from "bluebird";
-import { MongoClient } from "mongodb";
+import { MongoClient, Filter } from "mongodb";
 import { getCollectionID } from "../../../server/env";
-import { Filter } from 'mongodb';
 /**
  * This is the DAO service for Scicat. It uses a mongo connection
  * to retrieve data.  Database connection parameters are

@@ -2,6 +2,7 @@ import logger from "../../../server/logger";
 import { reject } from "bluebird";
 import { MongoClient, Filter } from "mongodb";
 import { getCollectionID } from "../../../server/env";
+import { StatusFilter } from "../../core/core-oai-provider";
 /**
  * This is the DAO service for Scicat. It uses a mongo connection
  * to retrieve data.  Database connection parameters are
@@ -59,7 +60,7 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public recordsQuery(parameters: any, filter: Filter): Promise<any> {
+  public recordsQuery(parameters: any, filter: Filter<StatusFilter>): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -72,7 +73,7 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public identifiersQuery(parameters: any, filter: Filter): Promise<any> {
+  public identifiersQuery(parameters: any, filter: Filter<StatusFilter>): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
@@ -85,7 +86,7 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public getRecord(parameters: any, filter: Filter): Promise<any> {
+  public getRecord(parameters: any, filter: Filter<StatusFilter>): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }

@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   push:
-    branches: [ "mongodb-update-f2" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "mongodb-update-f2" ]
+    branches: [ "master" ]
 
 
 jobs:

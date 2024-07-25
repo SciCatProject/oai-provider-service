@@ -1,8 +1,8 @@
 import logger from "../../../server/logger";
 import { reject } from "bluebird";
-import { MongoClient } from "mongodb";
+import { MongoClient, Filter } from "mongodb";
 import { getCollectionID } from "../../../server/env";
-
+import { StatusFilter } from "../../core/core-oai-provider";
 /**
  * This is the DAO service for Scicat. It uses a mongo connection
  * to retrieve data.  Database connection parameters are
@@ -13,6 +13,7 @@ export class MongoConnector {
   public db;
   public dbName: string;
   public collectionName: string;
+  public mongoDb: MongoClient;
 
   private constructor() {
     logger.debug("Setting up the mongo connection.");
@@ -24,13 +25,22 @@ export class MongoConnector {
     this.dbName = process.env.DATABASE;
     this.collectionName = process.env.COLLECTION;
 
-    MongoClient.connect("mongodb://" + url, { useUnifiedTopology: true }, (err, client) => {
-      if (err) {
-        logger.error("failed to connect", err);
-        this.db = null;
-      }
-      this.db = client.db(this.dbName);
-    });
+     const  mongoUrl = "mongodb://"+url;
+     logger.debug("Creating MongoClient with mongoUrl : "+mongoUrl);
+     this.mongoDb = new MongoClient(mongoUrl);
+
+     this.mongoDb.connect()
+        .then( client => {
+             this.db = client.db(this.dbName);
+             logger.debug("Client succefully connected to: "+mongoUrl);
+             logger.debug("Client database: "+this.dbName);
+           }
+        ).catch(
+           error => {
+              logger.error("Failed to connect to "+mongoUrl+" : "+error.message);
+              this.db = null;
+           }
+        );
   }
 
   public static getInstance(): MongoConnector {
@@ -50,20 +60,12 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public recordsQuery(parameters: any, filter: MongoClient.filter): Promise<any> {
+  public recordsQuery(parameters: any, filter: Filter<StatusFilter>): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
-      Publication.find(filter).toArray(function(err, items) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(items);
-        }
-      });
-    });
+    return Publication.find(filter).toArray() ;
   }
 
   /**
@@ -71,21 +73,12 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public identifiersQuery(parameters: any, filter: MongoClient.filter): Promise<any> {
+  public identifiersQuery(parameters: any, filter: Filter<StatusFilter>): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
-      // need to add relevant date to projection
-      Publication.find(filter, { _id: 1 }).toArray(function(err, items) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(items);
-        }
-      });
-    });
+    return Publication.find(filter , { _id: 1 } ).toArray() ;
   }
 
   /**
@@ -93,25 +86,17 @@ export class MongoConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public getRecord(parameters: any, filter: MongoClient.filter): Promise<any> {
+  public getRecord(parameters: any, filter: Filter<StatusFilter>): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
-      const query = {$and: [
+    const query = {$and: [
         {[`${getCollectionID()}`]: parameters.identifier},
         filter,
       ]
       };
-      Publication.findOne(query, {}, function(err, item) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(item);
-        }
-      });
-    });
+    return Publication.findOne(query);
   }
 
   private aggregatePublicationQuery(pipeline: any): Promise<any> {
@@ -136,15 +121,7 @@ export class MongoConnector {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
-      Publication.insertOne(parameters, {}, function(err, item) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(item);
-        }
-      });
-    });
+    return Publication.insertOne(parameters);
   }
 
   public updatePublication(parameters: any): Promise<any> {
@@ -152,32 +129,15 @@ export class MongoConnector {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
-      Publication.updateOne({ doi: parameters.doi }, {$set: parameters.body }, function(err, item) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(item);
-        }
-      });
-    });
+    return Publication.updateOne({ doi: parameters.doi }, {$set: parameters.body });
   }
 
   public countPublication(parameters: any): Promise<any> {
     if (!this.db) {
       reject("no db connection");
     }
-
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
-      Publication.countDocuments(parameters, {}, function(err, count) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(count);
-        }
-      });
-    });
+    return Publication.countDocuments(parameters) ;
   }
 
   // supports skip and limit
@@ -186,7 +146,6 @@ export class MongoConnector {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
       let skip = 0;
       let limit = 0;
       let sort: any;
@@ -204,20 +163,12 @@ export class MongoConnector {
 
       const project = this.projectFields(query);
 
-      Publication.find()
+      return Publication.find()
         .skip(skip)
         .limit(limit)
         .sort(sort)
         .project(project)
-        .toArray(function(err, result) {
-          if (err) {
-            logger.debug("Mongo Error. ", err);
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
-    });
+        .toArray();
   }
 
   private projectFields(query: any) {
@@ -229,7 +180,7 @@ export class MongoConnector {
     if (query && query.includeFields) {
       query.includeFields.split('|').reduce((previousValue, currentValue) => (previousValue[currentValue] = 1, previousValue), project);
     }
-    return project
+    return project;
   }
 
   public findPublication(query: any): Promise<any> {
@@ -237,14 +188,6 @@ export class MongoConnector {
       reject("no db connection");
     }
     let Publication = this.db.collection(this.collectionName);
-    return new Promise((resolve: any, reject: any) => {
-      Publication.findOne({ doi: query }, {}, function(err, item) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(item);
-        }
-      });
-    });
+    return Publication.findOne({ doi: query });
   }
 }

@@ -34,6 +34,10 @@ interface Formats {
     namespace: string;
 }
 
+export interface StatusFilter {
+    status: string ;
+}
+
 /**
  * The time formats that can be returned with OAI Identify requests.
  */

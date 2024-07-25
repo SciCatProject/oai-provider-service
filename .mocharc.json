@@ -1,0 +1,5 @@
+{
+  "require": "tsx",
+  "extension": ["ts"],
+  "spec": [ "src/server/env.ts" , "test/**/*.ts"]
+}

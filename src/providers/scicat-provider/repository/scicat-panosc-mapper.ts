@@ -27,14 +27,14 @@ export class ScicatPanoscMapper extends ProviderDCMapper {
   }
 
   private createItemRecord(record: any): any {
-    //const updatedAt: string = this.setTimeZoneOffset(record);
+    const updatedAt: string = this.setTimeZoneOffset(record);
     let item = {
       record: [
         {
           header: [
             { identifier: record[this.collection_id].toString() },
             { setSpec: "openaire_data" },
-            { datestamp: "updatedAt" }
+            { datestamp: updatedAt }
           ]
         },
         {

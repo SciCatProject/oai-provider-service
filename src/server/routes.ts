@@ -24,6 +24,7 @@
  */
 
 import { Application } from "express";
+import { Configuration } from "./configuration"
 import * as scicat from "../providers/controllers/scicat";
 import * as panosc from "../providers/controllers/panosc";
 import * as openaire from "../providers/controllers/openaire";
@@ -31,19 +32,22 @@ import logger from "./logger";
 
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
+
+  const conf = Configuration.instance;
+
   app.get('/', (req, res) => {
     const uptime = process.uptime() * 1000;
     return res.send(
-        { "started": new Date(Date.now() - uptime).toISOString().split('.')[0]+"Z", "uptime": +uptime.toFixed(3) });
+      {
+        ...conf,
+        ...{ 
+          "started": new Date(Date.now() - uptime).toISOString().split('.')[0]+"Z", 
+          "uptime": +uptime.toFixed(3),
+        },
+      },
+    );
   });
-  app.get('/scicat/oai', scicat.oai);
-  app.get("/scicat/Publication/detail/:id?", scicat.findPublication);
-  app.get("/scicat/Publication/count/:params?", scicat.countPublication);
-  app.get("/scicat/Publication/:limits?", scicat.getPublication);
-  app.post('/scicat/oai/Publication', scicat.putPublication);
-  app.put('/scicat/oai/Publication/:id', scicat.updatePublication);
-  //app.get('/scicat/Publication/:id', scicat.getPublication);
-  app.get('/scicat/Publication', scicat.getPublication);
-  app.get('/panosc/oai', panosc.oai);
-  app.get('/openaire/oai', openaire.oai);
+  app.get(conf.scicat_route, scicat.oai);
+  app.get(conf.panosc_route, panosc.oai);
+  app.get(conf.openaire_route, openaire.oai);
 };

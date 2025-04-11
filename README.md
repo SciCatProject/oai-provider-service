@@ -50,55 +50,27 @@ The Express server will start on default port 3000.
 * [`http://localhost:3000/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc`](http://localhost:3000/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc)
 * [`http://localhost:3000/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc`](http://localhost:3000/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc)
 
-### PUT Records:
-
-Add new records to your mongodb instance by HTTP PUT using the following route:
-
-* `http://localhost:3000/scicat/Publication`
-
 
 ## ENVIRONMENT Variables
 
 *System variables**
  Key | Description | Default
  --------:|-------------| --------
-DAPP_ID | No Idea | oai-pmh-service
-CONNECTOR | (don't change) | mongodb
-ADMIN_USER_EMAIL | E-Mail address of the admin user | none
+APP_ID | Application name used in logging | oai_provider_service
+LOG_LEVEL | Level of the logging | debug
+VERSION | Version number of the service | _unknown_
+ADMIN_USER_EMAIL | E-Mail address of the admin user | _none_
 LOG_LEVEL | default/error/warning | error  
+PUBLISHED_DATA_ID | field of the published data to be used as id | doi
+SCICAT_BACKEND_URL | Full URL of the SciCat Backend Instance to connect to | _none_
+SERVICE_URL | URL of the server running the service | http://localhost 
+SERVICE_PORT | Port on which the service is listening | 3000
+OPENAIRE_ROUTE | route to openaire endpoint used to harvest data using openaire oai-pmh schema | /openaire/oai
+SCICAT_ROUTE | route to scicat endpoint used to harvest data using scicat oai-pmh schema | /scicat/oai
+PANOSC_ROUTE | route to panosc endpoint used to harvest data using panosc oai-pmh schema | /panosc/oai
+SERVICE_NAME | Name assigned by the admins to this specific instance of the service | oai_provider_service
+FACILITY_NAME | Name of the facility where this service is running | _unknown_
 
-**Mongo DB variables**
- Key | Description | Default
- --------:|-------------| --------
-CONNECTOR | (don't change) | mongodb
-DB_HOST | Database Hostname | none
-DB_PORT | Database Port | none
-DB_USER | Database Username | none
-DB_PASS | Database Password | none
-DB_URL |  [&lt;user&gt;:&lt;password&gt;@]&lt;host&gt;:&lt;port&gt;/&lt;dbName&gt;| none
-DATABASE | Publication Database | dacat-next
-COLLECTION | Collection to storage Publation Documents| PublishedData
-COLLECTION_ID | Unique Identifier of records | 'doi' 
-BASE_URL | Prefix to link back to this server | http://localhost 
-
-**Note**: When DB_URL is specified, DB_HOST/DB_PORT/DB_USER/DB_PASS and DATABASE are ignored.
-
-**OAI_PMH Listen Port**
-
- Key | Description | Default
- --------:|-------------| --------
-HOST_CONFIGURATION | web server configuration | production/host_config.json
-
-The content of the *host_config.json* file are the json encoded variables to steer the web server itself. 
-As far as I can see, the 'host' variable is ignored in the code, but the 'port' variable is honored.
-
-**Example** for a *host_config.json* file.
-```
-{
-   "host": "localhost",
-    "port": 3000
-}
-```
 
 ### Docker start example
 Docker start example, assuming there is a network called

@@ -28,10 +28,10 @@ import {ProviderConfiguration} from "../../core/oai-service";
 /**
  * module configuration.
  */
-export class Configuration implements ProviderConfiguration {
+export class OaiLocalConfiguration implements ProviderConfiguration {
 
     public repositoryName: string = "Scicat Provider";
-    public baseURL: string =  process.env.BASE_URL;
+    public baseURL: string =  process.env.SERVICE_URL || "http://localhost";
     public protocolVersion: string = '2.0';
     public adminEmail: string = process.env.ADMIN_USER_EMAIL;
     public port: number = 0;

@@ -1,6 +1,7 @@
-export class Configuration {
-    private static _instance: Configuration;
+export class AppConfiguration {
+    private static _instance: AppConfiguration;
 
+    public environment: string = process.env.ENVIRONMENT || "local testing";
     public app_id: string = process.env.APP_ID || "oai_provider_service";
     public log_level: string = process.env.LOG_LEVEL || "debug";
     public version: string = process.env.VERSION || "unknown";

@@ -23,7 +23,7 @@
  *  along with OAI-PHM Service.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import './server/env';
+require('dotenv').config();
 import Server from './server/server';
 import routes from './server/routes';
 

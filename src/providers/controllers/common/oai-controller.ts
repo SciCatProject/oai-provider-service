@@ -24,7 +24,7 @@ export let oaiController = (
     provider: CoreOaiProvider,
 ) => {
   res.set("Content-Type", "text/xml");
-  logger.debug("Request:", req.query);
+  logger.debug("Request:" + JSON.stringify(req.query));
   
   switch (req.query.verb) {
     case "Identify":

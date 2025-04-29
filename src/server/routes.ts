@@ -24,7 +24,7 @@
  */
 
 import { Application } from "express";
-import { Configuration } from "./configuration"
+import { AppConfiguration } from "./app-configuration"
 import * as scicat from "../providers/controllers/scicat";
 import * as panosc from "../providers/controllers/panosc";
 import * as openaire from "../providers/controllers/openaire";
@@ -33,13 +33,13 @@ import logger from "./logger";
 export default function routes(app: Application): void {
   logger.debug('Setting express routes for OAI providers.');
 
-  const conf = Configuration.instance;
+  const aconf = AppConfiguration.instance;
 
   app.get('/', (req, res) => {
     const uptime = process.uptime() * 1000;
     return res.send(
       {
-        ...conf,
+        ...aconf,
         ...{ 
           "started": new Date(Date.now() - uptime).toISOString().split('.')[0]+"Z", 
           "uptime": +uptime.toFixed(3),
@@ -47,7 +47,7 @@ export default function routes(app: Application): void {
       },
     );
   });
-  app.get(conf.scicat_route, scicat.oai);
-  app.get(conf.panosc_route, panosc.oai);
-  app.get(conf.openaire_route, openaire.oai);
+  app.get(aconf.scicat_route, scicat.oai);
+  app.get(aconf.panosc_route, panosc.oai);
+  app.get(aconf.openaire_route, openaire.oai);
 };

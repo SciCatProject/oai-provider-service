@@ -23,10 +23,11 @@
  *  along with OAI-PHM Service.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import  xml = require('xml');
 import {EXCEPTION_CODES, ExceptionParams} from "./core-oai-provider";
 import {Exceptions} from "./exceptions/exceptions";
+import logger from "../../server/logger";
 
+import  xml = require('xml');
 
 var now = new Date();
 now.setDate(now.getDate());
@@ -64,7 +65,8 @@ function generateResponse(verb: string, url: string, responseContent: any): stri
     const newResponse = JSON.parse(JSON.stringify(responseTemplate));
     newResponse['OAI-PMH'].push({request: [{_attr: verb}, url]});
     newResponse['OAI-PMH'].push(responseContent);
-    return xml(newResponse, {declaration: true});
+    const output = xml(newResponse, {declaration: true});
+    return output;
 }
 
 /**

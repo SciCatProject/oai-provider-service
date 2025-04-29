@@ -1,5 +1,5 @@
 {
-  "name": "OAI-PMH-Service",
+  "name": "scicat-oai-pmh-service",
   "version": "1.0.0",
   "description": "A standalone OAI-PMH provider for Nodejs that can support multiple data sources.",
   "main": "index.js",
@@ -9,11 +9,10 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "clean": "gulp dist-clean",
-    "distclean": "gulp dist-clean && gulp build && gulp copy-production",
-    "start": "cd dist && NODE_ENV=production node index",
-    "compile": "gulp dist-clean && gulp build && gulp copy-production",
-    "dev": "gulp build && gulp copy && cd dist && node index | pino -o 'short'",
+    "clean": "rimraf dist",
+    "build": "npx tsc -b",
+    "start": "cd dist && node index.js",
+    "compile": "npx tsc -b",
     "test": "node build.js && mocha --exit"
   },
   "dependencies": {
@@ -25,6 +24,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "fetch": "^1.1.0",
     "http-auth": "^4.2.0",
     "lodash": "^4.17.21",
     "mongodb": "^6.7.0",

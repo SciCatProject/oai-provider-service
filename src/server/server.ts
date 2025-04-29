@@ -23,18 +23,15 @@
  *  along with OAI-PHM Service.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import express = require("express");
-import { Application } from "express";
-import bodyParser = require("body-parser");
-import http = require("http");
+import express, { Application } from "express";
+import bodyParser from "body-parser";
+import http from "http";
 import logger from "./logger";
-import { getHostConfiguration, hasHostConfigurationFile } from "./host-config";
-import { CorsOptions } from "cors";
-var cors = require('cors')
+import { AppConfiguration } from "./app-configuration"
+import cors, { CorsOptions } from "cors";
 
 
-const app = express();
-
+const app: Application = express();
 
 export default class ExpressServer {
   constructor() {
@@ -64,13 +61,13 @@ export default class ExpressServer {
   }
 
   listen(): Application {
-    const config = this.getConfiguration();
-    const port = this.getPort(config);
+    const aconf = AppConfiguration.instance;
+    const port = aconf.service_port;
+    const environment = aconf.environment;
 
     const welcome: any = () => {
       logger.info(
-        `******** Up and running in ${process.env.NODE_ENV ||
-          "development"} @: ${process.env.BASE_URL} on port: ${port}}***********`
+        `Up and running in ${environment} @: ${aconf.service_url} on port: ${port}`
       );
     };
 
@@ -78,32 +75,5 @@ export default class ExpressServer {
     return app;
   }
 
-  /**
-   * Returns default port if host configuration is not available.
-   * @returns {number}
-   */
-  private getConfiguration(): object {
-    if (hasHostConfigurationFile()) {
-      return getHostConfiguration();
-    } else {
-      logger.warn(
-        "No configuration provided. Using default port. See documentation for details."
-      );
-      return { port: 3000 };
-    }
-  }
-
-  /**
-   * Return configuration port or default port.
-   * @param configuration
-   * @returns {number}
-   */
-  private getPort(configuration: any): number {
-    if (configuration) {
-      if (configuration.port) {
-        return configuration.port;
-      }
-    }
-    return 3000;
-  }
 }
+

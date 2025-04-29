@@ -1,5 +1,6 @@
 import logger from "../../../server/logger";
 import { Configuration, PublishedDataApi, PublishedDataControllerFindAllRequest, PublishedDataControllerFindOneRequest } from "@scicatproject/scicat-sdk-ts-fetch";
+import { AppConfiguration } from "../../../server/app-configuration"
 
 /**
  * This is the DAO service for Scicat. It uses a mongo connection
@@ -11,12 +12,16 @@ export class SciCatBEConnector {
   public publishedDataApi: PublishedDataApi;
   public scicatUrl: string;
   public publishedDataCount: number;
+  private aconf: AppConfiguration;
 
   private constructor() {
 
     logger.debug("Setting up scicat client.");
 
-    this.scicatUrl = process.env.SCICAT_BACKEND_URL ? process.env.SCICAT_BACKEND_URL : "http://my.scicat.backend";
+    this.aconf = AppConfiguration.instance;
+
+    this.scicatUrl = this.aconf.scicat_backend_url;
+    logger.info("SciCat url: " + this.scicatUrl);
 
     if (!this.publishedDataApi) {
 

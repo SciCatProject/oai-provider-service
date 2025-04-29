@@ -431,6 +431,7 @@ export class CoreOaiProvider {
 
         return new Promise((resolve: any, reject: any) => {
             const queryParameters = this.getQueryParameters(query);
+            logger.debug("Query params" + JSON.stringify(queryParameters));
             const exception: ExceptionParams = {
                 baseUrl: this.parameters.baseURL,
                 verb: VERBS.IDENTIFY

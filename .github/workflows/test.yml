@@ -10,8 +10,8 @@ on:
       - release
 
 jobs:
-  test_build:
-    name: Build
+  test_app_build:
+    name: Build App
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,3 +29,21 @@ jobs:
       - name: Build
         run: |
           npm run build
+
+  test_build_image:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64/v8
+          push: false
+          tags: "github.event.repository.name:test_build"

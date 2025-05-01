@@ -1,10 +1,12 @@
+var package_json = require('../package.json');
+
 export class AppConfiguration {
     private static _instance: AppConfiguration;
 
     public environment: string = process.env.ENVIRONMENT || "local testing";
     public app_id: string = process.env.APP_ID || "oai_provider_service";
     public log_level: string = process.env.LOG_LEVEL || "debug";
-    public version: string = process.env.VERSION || "unknown";
+    public version: string = package_json.version;
     public admin_user_email: string = process.env.ADMIN_USER_EMAIL || "unknown";
     public published_data_id: string  = process.env.PUBLISHED_DATA_ID || "doi";
     public scicat_backend_url: string = process.env.SCICAT_BACKEND_URL || "unknown";

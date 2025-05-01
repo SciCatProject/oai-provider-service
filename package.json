@@ -1,6 +1,6 @@
 {
   "name": "scicat-oai-pmh-service",
-  "version": "1.0.0",
+  "version": "dev",
   "description": "A standalone OAI-PMH provider for Nodejs that can support multiple data sources.",
   "main": "index.js",
   "license": "GPL-3.0",
@@ -10,9 +10,10 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npx tsc -b",
+    "build": "npx tsc -b && cp package.json dist/.",
+    "start.env": "cp .env dist/.env && cd dist && node index.js",
     "start": "cd dist && node index.js",
-    "compile": "npx tsc -b",
+    "clean.start.env": "npm run clean && npm run build && npm run start.env",
     "test": "node build.js && mocha --exit"
   },
   "dependencies": {

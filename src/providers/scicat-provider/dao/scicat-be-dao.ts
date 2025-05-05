@@ -35,16 +35,14 @@ export class SciCatBEConnector {
 
       this.publishedDataApi = new PublishedDataApi(apiConfig);
 
-      let publishedDataCount = -1;
       this.publishedDataApi.publishedDataControllerCount()
         .then( (res) =>{
-          publishedDataCount = res.count;
+          this.publishedDataCount = res.count;
         })
         .catch( (error) => {
           logger.error("Failed to connect to SciCat :", error.message);
           throw error;
         });
-      this.publishedDataCount = publishedDataCount; 
       
     }
   }

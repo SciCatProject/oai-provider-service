@@ -21,6 +21,10 @@ export class SciCatBEConnector {
     this.aconf = AppConfiguration.instance;
 
     this.scicatUrl = this.aconf.scicat_backend_url;
+    if (this.scicatUrl == "") {
+      logger.error("SciCat Backend URL should be defined")
+      throw new Error("SciCat Backend URL should be defined")
+    }
     logger.info("SciCat url: " + this.scicatUrl);
 
     if (!this.publishedDataApi) {
@@ -37,8 +41,7 @@ export class SciCatBEConnector {
           publishedDataCount = res.count;
         })
         .catch( (error) => {
-          logger.error("Failed to connect to SciCat");
-          logger.error(error.message);
+          logger.error("Failed to connect to SciCat :", error.message);
           throw error;
         });
       this.publishedDataCount = publishedDataCount; 
@@ -64,9 +67,6 @@ export class SciCatBEConnector {
    * @returns {Promise<any>}
    */
   public recordsQuery(parameters: any,): Promise<any> {
-    if (!this.publishedDataApi) {
-      throw new Error("No connection to SciCAt instance.");
-    }
     const filters: PublishedDataControllerFindAllRequest = {
       filter: JSON.stringify({
         "where":{"status":"registered"},
@@ -82,9 +82,6 @@ export class SciCatBEConnector {
    * @returns {Promise<any>}
    */
   public identifiersQuery(parameters: any): Promise<any> {
-    if (!this.publishedDataApi) {
-      throw new Error("No connection to SciCAt instance.");
-    }
     const filters: PublishedDataControllerFindAllRequest = {
       filter: JSON.stringify({
         "where":{"status":"registered"},
@@ -105,9 +102,6 @@ export class SciCatBEConnector {
    * @returns {Promise<any>}
    */
   public getRecord(parameters: any): Promise<any> {
-    if (!this.publishedDataApi) {
-      throw new Error("No connection to SciCAt instance.");
-    }
     const filters: PublishedDataControllerFindOneRequest = {
       id: parameters.identifier,
     };
@@ -115,9 +109,6 @@ export class SciCatBEConnector {
   }
 
   public countPublication(parameters: any): Promise<any> {
-    if (!this.publishedDataApi) {
-      throw new Error("No connection to SciCAt instance.");
-    }
     return this.publishedDataApi.publishedDataControllerCount()
   }
 

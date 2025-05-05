@@ -9,7 +9,7 @@ export class AppConfiguration {
     public version: string = package_json.version;
     public admin_user_email: string = process.env.ADMIN_USER_EMAIL || "unknown";
     public published_data_id: string  = process.env.PUBLISHED_DATA_ID || "doi";
-    public scicat_backend_url: string = process.env.SCICAT_BACKEND_URL || "unknown";
+    public scicat_backend_url: string = process.env.SCICAT_BACKEND_URL;
     public service_url: string = process.env.SERVICE_URL || "http://localhost";
     public service_port: number = +process.env.SERVICE_PORT || 3000;
     public openaire_route: string = process.env.OPENAIRE_ROUTE || "/openaire/oai";

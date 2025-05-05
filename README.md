@@ -125,7 +125,7 @@ It implements the following three endpoints which provides slightly different ma
 * openaire/oai
 * panosc/oai
 
-For each one of the endpoint, the folliwing verbs are implemented:
+For each one of the endpoint, the following verbs are implemented:
 * Identify: 
 [`http://localhost:3000/openaire/oai?verb=Identify`](http://localhost:3000/openaire/oai?verb=Identify)
 * ListMetadataFormats: [`http://localhost:3000/openaire/oai?verb=ListMetadataFormats`](http://localhost:3000/openaire/oai?verb=ListMetadataFormats)

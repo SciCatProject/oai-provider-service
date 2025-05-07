@@ -24,7 +24,6 @@
  */
 
 import {generateException, generateResponse} from "./oai-response";
-import { getCollectionID } from "../../server/env";
 import {OaiService, ProviderConfiguration} from './oai-service';
 import logger from "../../server/logger";
 
@@ -84,7 +83,7 @@ export enum METADATA_FORMAT_DC {
  */
 export abstract class ProviderDCMapper {
     route: string;
-    get collection_id(): string {return getCollectionID()};
+    get collection_id(): string {return process.env.PUBLISHED_DATA_ID || 'doi'};
     abstract mapOaiDcListRecords(records: any[]): any;
 
     abstract mapOaiDcGetRecord(records: any): any;
@@ -432,6 +431,7 @@ export class CoreOaiProvider {
 
         return new Promise((resolve: any, reject: any) => {
             const queryParameters = this.getQueryParameters(query);
+            logger.debug("Query params" + JSON.stringify(queryParameters));
             const exception: ExceptionParams = {
                 baseUrl: this.parameters.baseURL,
                 verb: VERBS.IDENTIFY

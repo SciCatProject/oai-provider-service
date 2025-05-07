@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import request from 'supertest';
 import * as jsdom from 'jsdom';
 import {createSandbox, SinonSandbox} from 'sinon';
-import { MongoConnector } from '../src/providers/scicat-provider/dao/mongo-dao';
 import * as fixtures from './fixtures';
 import { Application } from "express";
 import { ProviderDCMapper } from '../src/providers/core/core-oai-provider';
@@ -204,23 +203,5 @@ describe(`Test returned xmls`, () => {
     expect(response1.body.started).to.be.eql(response2.body.started);
     expect(response2.body.uptime).to.be.greaterThan(response1.body.uptime);
   });
-
-  it('test get publication', async () => {
-    const getPublication = await request(Server).get('/scicat/Publication')
-    expect(getPublication.body[0]).to.be.eql(fixtures['doi'].data)
-  })
-
-  it('test get publication with excludeFields', async () => {
-    const getPublication = await request(Server).get('/scicat/Publication/(excludeFields%3Dthumbnail%7Cdoi)')
-    expect(getPublication.body[0]).to.not.have.property('thumbnail')
-    expect(getPublication.body[0]).to.not.have.property('doi')
-  })
-
-  it('test get publication with includeFields', async () => {
-    const getPublication = await request(Server).get('/scicat/Publication/(includeFields%3Dthumbnail%7Cdoi)')
-    expect(getPublication.body[0]).to.have.property('thumbnail')
-    expect(getPublication.body[0]).to.have.property('doi')
-    expect(Object.keys(getPublication.body[0])).to.be.eql(['_id', 'doi', 'thumbnail'])
-  })
 
 });

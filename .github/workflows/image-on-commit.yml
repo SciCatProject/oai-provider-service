@@ -1,14 +1,13 @@
-name: Deploy
+name: Image on Commit
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches: 
+      - "master"
 
 
 jobs:
-  deploy:
+  image-on-commit:
     name: Build and deploy
     runs-on: ubuntu-latest
     steps:

@@ -1,0 +1,49 @@
+name: Test
+
+env:
+  NODE_VERSION: 20.x
+
+on:
+  pull_request: 
+    branches:
+      - master
+      - release
+
+jobs:
+  test_app_build:
+    name: Build App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install packages
+        run: |
+          npm install
+
+      - name: Build
+        run: |
+          npm run build
+
+  test_build_image:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          tags: "github.event.repository.name:test_build"

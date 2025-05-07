@@ -1,12 +1,8 @@
-# OAI-PMH Service
-
-[![Build Status](https://github.com/SciCatProject/oai-provider-service/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SciCatProject/oai-provider-service/actions)
-[![DeepScan grade](https://deepscan.io/api/teams/8394/projects/10552/branches/148053/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=8394&pid=10552&bid=148053)
-[![Known Vulnerabilities](https://snyk.io/test/github/SciCatProject/oai-provider-service/master/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SciCatProject/oai-provider-service/master?targetFile=package.json)
+# OAI-PMH Service for SciCat
 
 Credit upstream author hatfieldlibrary/oai-provider-service.
 
-OAI-PMH Service is a Nodejs Express application that supports multiple, configurable [OAI-PMH version 2.0](https://www.openarchives.org/OAI/openarchivesprotocol.html) data providers.
+OAI-PMH Service for SciCat is a Nodejs application that allows SciCat instances to distribute Published Data records through the OAI-PMH protocol and be harvested by data collectors through this protocol.
 
 OAI-PMH Service borrows from the [Modular OAI-PMH Server](https://github.com/NatLibFi/oai-pmh-server), University of Helsinki, 
 The National Library of Finland. 
@@ -14,9 +10,9 @@ The National Library of Finland.
 
 ## Dependenices
 
-* Node v18.20.38+
+* Node v20+
 * Typescript 5.5.3+
-* npm 10.8.1+
+* npm 10.9+
 * tsx v4.16.2 (for mocha tests only)
 
 ## Capabilities
@@ -24,115 +20,143 @@ The National Library of Finland.
 Supports `Identify`, `ListMetadataFormats`, `GetRecord`, `ListIdentifiers` and `ListRecords`. The optional
 `from` and `until` arguments are supported for selective harvesting with `YYYY-MM-DDThh:mm:ssZ` granularity.  `ListSets` is not supported.  
 
-## Install It
+## Installation
+### From source code
+Clone this repository
+```
+git clone https://github.com/SciCatProject/oai-provider-service.git
+cd oai-provider-service
+```
+Install all the needed node modules
 ```
 npm install
 ```
-
-## Configure It
-
-The service uses dotenv to import variables into the environment and from the top level .env file (in the production dir), a variable HOST_CONFIGURATION is defined which points to a JSON file, defining port and host for the service itself. If multiple providers are desired, then the definition of HOST_CONFIGURATION should be moved to the provider level. At this time, we do not require multiple providers.
-
-## Run It
-#### Run in *development* mode:
-
+Configure your instance with a `.env` file. Please see below for more information about available options.  
+  
+Run the application locally
 ```
-npm run dev
+npm run clean.start.env
 ```
 
-#### Routes:
+### From local docker container
+Clone this repository
+```
+git clone https://github.com/SciCatProject/oai-provider-service.git
+cd oai-provider-service
+```
+Create local docker image
+```
+docker build -t "scicatproject/oai-provider-service:local" .
+```
+If needed, change your copy of the file `nev.docker.testing`.  
+  
+Run the application from the docker container
+```
+docker run --env-file .env.docker.testing -p 3000:3000 scicatproject/oai-provider-service
+```
+On the terminal window, you should see the following output:
+```
+{"level":20,"time":1746090432790,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"Creating the OAI data provider for: Scicat Provider"}
+{"level":20,"time":1746090432791,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"Setting up scicat client."}
+{"level":30,"time":1746090432791,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"SciCat url: https://my.scicat.instance"}
+{"level":20,"time":1746090432792,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"Creating the OAI data provider for: Scicat Provider"}
+{"level":20,"time":1746090432793,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"Creating the OAI data provider for: Scicat Provider"}
+{"level":20,"time":1746090432795,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"Setting express routes for OAI providers."}
+{"level":30,"time":1746090432795,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"Up and running in local testing @: http://localhost on port: 3000"}
+```
+If you see the following output, the container cannot connect to the SciCat BE instance that you want to use.  
+Please verify that the URL that you provided in configuration is correct.
+```
+> cd dist && node index.js
+...
+{"level":50,"time":1746090432891,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"Failed to connect to SciCat"}
+{"level":50,"time":1746090432891,"pid":18,"hostname":"xxxxxx","name":"oai_provider_service","msg":"The request failed and the interceptors did not return an alternative response"}
+/home/node/app/node_modules/@scicatproject/scicat-sdk-ts-fetch/dist/runtime.js:110
+                        throw new FetchError(e, 'The request failed and the interceptors did not return an alternative response');
+                              ^
 
-The Express server will start on default port 3000.  
+FetchError: The request failed and the interceptors did not return an alternative response
+    at PublishedDataApi.<anonymous> (/home/node/app/node_modules/@scicatproject/scicat-sdk-ts-fetch/dist/runtime.js:110:31)
+    at Generator.throw (<anonymous>)
+    at rejected (/home/node/app/node_modules/@scicatproject/scicat-sdk-ts-fetch/dist/runtime.js:19:65)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  cause: TypeError: fetch failed
+      at node:internal/deps/undici/undici:13510:13
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+    [cause]: Error: getaddrinfo ENOTFOUND my.scicat.instance
+        at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:120:26) {
+      errno: -3008,
+      code: 'ENOTFOUND',
+      syscall: 'getaddrinfo',
+      hostname: 'my.scicat.instance'
+    }
+  }
+}
 
-* [`http://localhost:3000/scicat/oai?verb=Identify`](http://localhost:3000/scicat/oai?verb=Identify)
-* [`http://localhost:3000/scicat/oai?verb=ListMetadataFormats`](http://localhost:3000/scicat/oai?verb=ListMetadataFormats)
-* [`http://localhost:3000/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc`](http://localhost:3000/scicat/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc)
-* [`http://localhost:3000/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc`](http://localhost:3000/scicat/oai?verb=ListIdentifiers&metadataPrefix=oai_dc)
-* [`http://localhost:3000/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc`](http://localhost:3000/scicat/oai?verb=ListRecords&metadataPrefix=oai_dc)
+Node.js v20.19.1
+```
 
-### PUT Records:
-
-Add new records to your mongodb instance by HTTP PUT using the following route:
-
-* `http://localhost:3000/scicat/Publication`
-
-
-## ENVIRONMENT Variables
-
-*System variables**
- Key | Description | Default
- --------:|-------------| --------
-DAPP_ID | No Idea | oai-pmh-service
-CONNECTOR | (don't change) | mongodb
-ADMIN_USER_EMAIL | E-Mail address of the admin user | none
-LOG_LEVEL | default/error/warning | error  
-
-**Mongo DB variables**
- Key | Description | Default
- --------:|-------------| --------
-CONNECTOR | (don't change) | mongodb
-DB_HOST | Database Hostname | none
-DB_PORT | Database Port | none
-DB_USER | Database Username | none
-DB_PASS | Database Password | none
-DB_URL |  [&lt;user&gt;:&lt;password&gt;@]&lt;host&gt;:&lt;port&gt;/&lt;dbName&gt;| none
-DATABASE | Publication Database | dacat-next
-COLLECTION | Collection to storage Publation Documents| PublishedData
-COLLECTION_ID | Unique Identifier of records | 'doi' 
-BASE_URL | Prefix to link back to this server | http://localhost 
-
-**Note**: When DB_URL is specified, DB_HOST/DB_PORT/DB_USER/DB_PASS and DATABASE are ignored.
-
-**OAI_PMH Listen Port**
-
- Key | Description | Default
- --------:|-------------| --------
-HOST_CONFIGURATION | web server configuration | production/host_config.json
-
-The content of the *host_config.json* file are the json encoded variables to steer the web server itself. 
-As far as I can see, the 'host' variable is ignored in the code, but the 'port' variable is honored.
-
-**Example** for a *host_config.json* file.
+Point your browser to url `http://localhost:3000`.
+You should see the following information:
 ```
 {
-   "host": "localhost",
-    "port": 3000
+   "environment":"local testing",
+   "app_id":"oai_provider_service",
+   "log_level":"debug",
+   "version":"dev",
+   "admin_user_email":"docker.testing@oai-pmh.scicatproject.org","published_data_id":"doi",
+   "scicat_backend_url":"https://xxxxxxxx",
+   "service_url":"http://localhost",
+   "service_port":3000,
+   "openaire_route":"/openaire/oai",
+   "scicat_route":"/scicat/oai",
+   "panosc_route":"/panosc/oai","service_name":"oai_provider_docker_testing",
+   "facility_name":"Local Docker Testing",
+   "started":"2025-05-01T09:15:31Z",
+   "uptime":12004.478
 }
 ```
 
-### Docker start example
-Docker start example, assuming there is a network called
-'scicatlive_default'.
-```
-docker run \
-   --network=scicatlive_default  \
-   -e CONNECTOR=mongodb \
-   -e DB_HOST=mongodb \
-   -e DB_PORT=27017   \
-   -e DB_USER=""      \
-   -e DB_PASSWORD=""  \
-   -e DATABASE=dacat-next \
-   -e COLLECTION=PublishedData \
-   -e COLLECTION_ID="_id" \
-   -e HOST_CONFIG=server/host_config.json \
-   -p 7002:3001 \
-   --name=oai-pmh-provider \
-   oai-pmh-provider
-```
+## Routes
 
-## Run in *production* mode:
+The service will start on default port 3000.
+It implements the following three endpoints which provides slightly different mapping of the XML provided:
+* scicat/oai
+* openaire/oai
+* panosc/oai
 
-At the simplest level:
-```
-npm run compile
-npm start
-```
+For each one of the endpoint, the following verbs are implemented:
+* Identify: 
+[`http://localhost:3000/openaire/oai?verb=Identify`](http://localhost:3000/openaire/oai?verb=Identify)
+* ListMetadataFormats: [`http://localhost:3000/openaire/oai?verb=ListMetadataFormats`](http://localhost:3000/openaire/oai?verb=ListMetadataFormats)
+* GetRecord: [`http://localhost:3000/openaire/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc`](http://localhost:3000/openaire/oai?verb=GetRecord&identifier=1&metadataPrefix=oai_dc)
+* ListIdentifiers: [`http://localhost:3000/openaire/oai?verb=ListIdentifiers&metadataPrefix=oai`](http://localhost:3000/openaire/oai?verb=ListIdentifiers&metadataPrefix=oai)
+* ListRecords: [`http://localhost:3000/openaire/oai?verb=ListRecords&metadataPrefix=oai`](http://localhost:3000/openaire/oai?verb=ListRecords&metadataPrefix=oai)
 
-The gulp tasks compile Typescript and copy files to `dist`. 
+## Configuration
 
-The project can be deployed to a production server and started with `node index` from within `dist`. Runtime configurations
-can be adjusted using `.env` and (recommended) external configuration files created for your environment. We typically run as server daemon using [forever](https://github.com/foreverjs/forever), or some tool 
-to assure that the server runs continuously.  
+The service uses dotenv to import variables into the environment. You can configure an .env file in the top level folder, which will be properly copied to be used when running.
+You could also define environment variable in your terminal or in the docker container if you are running in containerized infrastructure.
+
+## ENVIRONMENT Variables
+
+Key | Description | Default
+--------:|-------------| --------
+ENVIRONMENT | String identifing the environment we are running in | local testing
+APP_ID | Application name used in logging | oai_provider_service
+LOG_LEVEL | Level of the logging | debug
+ADMIN_USER_EMAIL | E-Mail address of the admin user | _none_
+LOG_LEVEL | default/error/warning | error  
+PUBLISHED_DATA_ID | field of the published data to be used as id | doi
+SCICAT_BACKEND_URL | Full URL of the SciCat Backend Instance to connect to | _none_
+SERVICE_URL | URL of the server running the service | http://localhost 
+SERVICE_PORT | Port on which the service is listening | 3000
+OPENAIRE_ROUTE | route to openaire endpoint used to harvest data using openaire oai-pmh schema | /openaire/oai
+SCICAT_ROUTE | route to scicat endpoint used to harvest data using scicat oai-pmh schema | /scicat/oai
+PANOSC_ROUTE | route to panosc endpoint used to harvest data using panosc oai-pmh schema | /panosc/oai
+SERVICE_NAME | Name assigned by the admins to this specific instance of the service | oai_provider_service
+FACILITY_NAME | Name of the facility where this service is running | _unknown_
+
 
 
 

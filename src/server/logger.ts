@@ -23,11 +23,14 @@
  *  along with OAI-PHM Service.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { AppConfiguration } from "./app-configuration"
 const pino = require('pino');
 
+const aconf = AppConfiguration.instance;
+
 const logger: any = pino({
-  name: process.env.APP_ID,
-  level: process.env.LOG_LEVEL,
+  name: aconf.app_id,
+  level: aconf.log_level,
 });
 
 export default logger;

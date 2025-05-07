@@ -48,7 +48,7 @@ import {
   METADATA_FORMAT_DC
 } from "../../core/core-oai-provider";
 import logger from "../../../server/logger";
-import { MongoConnector } from "../dao/mongo-dao";
+import { SciCatBEConnector } from "../dao/scicat-be-dao";
 
 /**
  * Factory function to create the oai provider
@@ -74,8 +74,7 @@ export enum SETS {
 }
 
 export function factory(options = {}): DataRepository {
-  const dao: MongoConnector = MongoConnector.getInstance();
-  const filter = {status: "registered"}
+  const dao: SciCatBEConnector = SciCatBEConnector.getInstance();
 
   return Object.freeze({
     /**
@@ -94,7 +93,7 @@ export function factory(options = {}): DataRepository {
      * @returns {Promise<any>} Resolves with a {@link record}
      */
     getRecord: (parameters: any) => {
-      return dao.getRecord(parameters, filter);
+      return dao.getRecord(parameters);
     },
 
     /**
@@ -129,7 +128,7 @@ export function factory(options = {}): DataRepository {
      * @returns {Promise<any>} an array of {@link record}
      */
     getIdentifiers: (parameters: any) => {
-      return dao.identifiersQuery(parameters, filter);
+      return dao.identifiersQuery(parameters);
     },
 
     /**
@@ -139,7 +138,7 @@ export function factory(options = {}): DataRepository {
      * @returns {Promise<any>} an array of {@link record}
      */
     getRecords: (parameters: any) => {
-      return dao.recordsQuery(parameters, filter);
+      return dao.recordsQuery(parameters);
     }
   });
 }

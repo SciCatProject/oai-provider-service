@@ -86,7 +86,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/scicatproject/backend-next
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=stable
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}

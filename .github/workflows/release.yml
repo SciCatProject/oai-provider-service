@@ -32,7 +32,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release_branches: ${{ env.RELEASE_BRANCH }}
-          dry-run: true
+          dry_run: true
 
       - name: Strip 'v' from the tag
         id: without_v
@@ -86,7 +86,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/scicatproject/backend-next
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=stable
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}

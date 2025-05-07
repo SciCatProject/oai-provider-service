@@ -157,7 +157,16 @@ PANOSC_ROUTE | route to panosc endpoint used to harvest data using panosc oai-pm
 SERVICE_NAME | Name assigned by the admins to this specific instance of the service | oai_provider_service
 FACILITY_NAME | Name of the facility where this service is running | _unknown_
 
+## Releases
+Releases are managed automatically by making a PR from master to release. 
+One the PR has been reviewed and merged, a new release is created and the related docker image will be added to repository.
 
+## Images
+Images are created when:
+- a PR is merged to master. 
+  These images are tagged with the related commit hash
+- a release PR is merged to release. 
+  These images are the official release images and are tagged with the related version which matches also the tag created in code
 
 
 

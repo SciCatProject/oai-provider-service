@@ -17,7 +17,7 @@ jobs:
       packages: write
 
     outputs:
-      new_tag: ${{ steps.without_v.outputs.tag }}
+      new_tag: ${{ steps.bare_tag_version.outputs.tag }}
       changelog: ${{ steps.tag_version.outputs.changelog }}
 
     steps:
@@ -35,7 +35,7 @@ jobs:
           dry_run: true
 
       - name: Strip 'v' from the tag
-        id: without_v
+        id: bare_tag_version
         run: |
           TAG=${{ steps.tag_version.outputs.new_tag }}
           WITHOUT_V=${TAG#v}
@@ -44,7 +44,7 @@ jobs:
       - name: Version update and tag
         id: version_update_and_tag
         run: |
-          npm version ${{ steps.tag_version.outputs.tag }}   # now commits & tags with your identity
+          npm version ${{ steps.bare_tag_version.outputs.tag }}   # now commits & tags with your identity
           git push --follow-tags
           echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         

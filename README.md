@@ -168,6 +168,9 @@ Images are created when:
 - a release PR is merged to release. 
   These images are the official release images and are tagged with the related version which matches also the tag created in code
 
-
+## Git settings
+Git is configured to ignore the following folders/files:
+- .vscode
+- .env
 
 

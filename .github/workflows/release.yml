@@ -45,6 +45,8 @@ jobs:
         id: version_update_and_tag
         run: |
           npm version ${{ steps.bare_tag_version.outputs.tag }}   # now commits & tags with your identity
+          git config user.email "version.update@github.workflow.com"
+          git config user.name "Version update in release workflow"
           git push --follow-tags
           echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         

@@ -24,7 +24,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "http-auth": "^4.2.0",
     "lodash": "^4.17.21",
     "mongodb": "^6.7.0",

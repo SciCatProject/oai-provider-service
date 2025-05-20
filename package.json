@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@scicatproject/scicat-sdk-ts-fetch": "^4.14.0",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.17.30",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
@@ -27,7 +27,6 @@
     "express": "^4.21.2",
     "http-auth": "^4.2.0",
     "lodash": "^4.17.21",
-    "mongodb": "^6.7.0",
     "node": "^20.19.0",
     "pino": "^9.1.0",
     "tsx": "^4.19.4",

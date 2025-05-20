@@ -3,9 +3,8 @@ import { Configuration, PublishedDataApi, PublishedDataControllerFindAllRequest,
 import { AppConfiguration } from "../../../server/app-configuration"
 
 /**
- * This is the DAO service for Scicat. It uses a mongo connection
- * to retrieve data.  Database connection parameters are
- * provided by the credentials file (path defined in .env).
+ * This is the DAO service for Scicat. 
+ * It uses the SciCat BE instance running to retrieve the published data.
  */
 export class SciCatBEConnector {
   public static instance: SciCatBEConnector;

@@ -8,7 +8,7 @@ export class OpenaireMapper extends ProviderDCMapper {
   /**
    * The Universal Coordinated Time (UTC) date needs to be modifed
    * to match the local timezone.
-   * @param record the raw data returned by the mongo dao query
+   * @param record the raw data returned by the dao query
    * @returns {string}
    */
   private setTimeZoneOffset(record: any): string {

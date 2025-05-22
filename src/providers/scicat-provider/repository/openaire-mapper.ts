@@ -12,7 +12,7 @@ export class OpenaireMapper extends ProviderDCMapper {
    * @returns {string}
    */
   private setTimeZoneOffset(record: any): string {
-    const date = new Date(record.updatedAt);
+    const date = new Date(record.updatedAt || record.createdAt);
     const timeZoneCorrection = new Date(
       date.getTime() + date.getTimezoneOffset() * -60000
     );

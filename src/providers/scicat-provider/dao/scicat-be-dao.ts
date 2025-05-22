@@ -87,9 +87,7 @@ export class SciCatBEConnector {
     };
     return this.publishedDataApi.publishedDataControllerFindAll(filters)
       .then( (res) => {
-        return res.map((item) =>{
-          return item.doi;
-        })
+        return res;
       });
   }
 

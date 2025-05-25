@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@scicatproject/scicat-sdk-ts-fetch": "^4.14.0",
-    "@types/node": "^20.17.30",
+    "@types/node": "^20.17.32",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",

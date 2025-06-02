@@ -113,13 +113,9 @@ export class ScicatPanoscMapper extends ProviderDCMapper {
     for (let record of records) {
       const updatedAt: string = this.setTimeZoneOffset(record);
       let item = {
-        record: [
-          {
-            header: [
-              { identifier: record[this.collection_id].toString() },
-              { datestamp: updatedAt }
-            ]
-          }
+        header: [
+          { identifier: record[this.collection_id].toString() },
+          { datestamp: updatedAt }
         ]
       };
 

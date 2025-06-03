@@ -79,7 +79,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Node.js dependencies
-        run: npm ci
+        run: |
+          npm install
+          npm ci
 
       ## The metadata-action dynamically generates and manages metadata for Docker images,
       ## like tags and labels, based on the provided inputs and workflow context.

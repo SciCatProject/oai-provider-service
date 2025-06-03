@@ -1,6 +1,6 @@
 {
   "name": "scicat-oai-pmh-service",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A standalone OAI-PMH provider for Nodejs that can support multiple data sources.",
   "main": "index.js",
   "license": "GPL-3.0",

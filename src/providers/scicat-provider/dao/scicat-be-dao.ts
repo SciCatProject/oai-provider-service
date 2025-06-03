@@ -1,5 +1,5 @@
 import logger from "../../../server/logger";
-import { Configuration, PublishedDataApi, PublishedDataControllerFindAllRequest, PublishedDataControllerFindOneRequest } from "@scicatproject/scicat-sdk-ts-fetch";
+import { Configuration, PublishedDataApi, PublishedDataControllerFindAllV3Request, PublishedDataControllerFindOneV3Request } from "@scicatproject/scicat-sdk-ts-fetch";
 import { AppConfiguration } from "../../../server/app-configuration"
 
 /**
@@ -34,7 +34,7 @@ export class SciCatBEConnector {
 
       this.publishedDataApi = new PublishedDataApi(apiConfig);
 
-      this.publishedDataApi.publishedDataControllerCount()
+      this.publishedDataApi.publishedDataControllerCountV3()
         .then( (res) =>{
           this.publishedDataCount = res.count;
         })
@@ -64,13 +64,13 @@ export class SciCatBEConnector {
    * @returns {Promise<any>}
    */
   public recordsQuery(parameters: any,): Promise<any> {
-    const filters: PublishedDataControllerFindAllRequest = {
+    const filters: PublishedDataControllerFindAllV3Request = {
       filter: JSON.stringify({
         "where":{"status":"registered"},
       }),
       fields: "{}",
     };
-    return this.publishedDataApi.publishedDataControllerFindAll(filters);
+    return this.publishedDataApi.publishedDataControllerFindAllV3(filters);
   }
 
   /**
@@ -79,13 +79,13 @@ export class SciCatBEConnector {
    * @returns {Promise<any>}
    */
   public identifiersQuery(parameters: any): Promise<any> {
-    const filters: PublishedDataControllerFindAllRequest = {
+    const filters: PublishedDataControllerFindAllV3Request = {
       filter: JSON.stringify({
         "where":{"status":"registered"},
       }),
       fields: "{}",
     };
-    return this.publishedDataApi.publishedDataControllerFindAll(filters)
+    return this.publishedDataApi.publishedDataControllerFindAllV3(filters)
       .then( (res) => {
         return res;
       });
@@ -97,14 +97,14 @@ export class SciCatBEConnector {
    * @returns {Promise<any>}
    */
   public getRecord(parameters: any): Promise<any> {
-    const filters: PublishedDataControllerFindOneRequest = {
+    const filters: PublishedDataControllerFindOneV3Request = {
       id: parameters.identifier,
     };
-    return this.publishedDataApi.publishedDataControllerFindOne(filters);
+    return this.publishedDataApi.publishedDataControllerFindOneV3(filters);
   }
 
   public countPublication(parameters: any): Promise<any> {
-    return this.publishedDataApi.publishedDataControllerCount()
+    return this.publishedDataApi.publishedDataControllerCountV3()
   }
 
 }

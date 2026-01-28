@@ -35,14 +35,14 @@ export class SciCatBEConnector {
       this.publishedDataApi = new PublishedDataApi(apiConfig);
 
       this.publishedDataApi.publishedDataControllerCountV3()
-        .then( (res) =>{
+        .then((res) => {
           this.publishedDataCount = res.count;
         })
-        .catch( (error) => {
+        .catch((error) => {
           logger.error("Failed to connect to SciCat :", error.message);
           throw error;
         });
-      
+
     }
   }
 
@@ -63,12 +63,14 @@ export class SciCatBEConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public recordsQuery(parameters: any,): Promise<any> {
+  public async recordsQuery(parameters: any,): Promise<any> {
+    const totalRecords = await this.publishedDataApi.publishedDataControllerCountV3();
     const filters: PublishedDataControllerFindAllV3Request = {
       filter: JSON.stringify({
-        "where":{"status":"registered"},
+        where: { status: "registered" },
+        fields: { thumbnail: 0 },
+        limits: { limit: totalRecords },
       }),
-      fields: "{}",
     };
     return this.publishedDataApi.publishedDataControllerFindAllV3(filters);
   }
@@ -78,15 +80,17 @@ export class SciCatBEConnector {
    * @param parameters
    * @returns {Promise<any>}
    */
-  public identifiersQuery(parameters: any): Promise<any> {
+  public async identifiersQuery(parameters: any): Promise<any> {
+    const totalRecords = await this.publishedDataApi.publishedDataControllerCountV3();
     const filters: PublishedDataControllerFindAllV3Request = {
       filter: JSON.stringify({
-        "where":{"status":"registered"},
+        where: { status: "registered" },
+        fields: { thumbnail: 0 },
+        limits: { limit: totalRecords },
       }),
-      fields: "{}",
     };
     return this.publishedDataApi.publishedDataControllerFindAllV3(filters)
-      .then( (res) => {
+      .then((res) => {
         return res;
       });
   }

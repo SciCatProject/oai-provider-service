@@ -12,6 +12,7 @@ export class SciCatBEConnector {
   public scicatUrl: string;
   public publishedDataCount: number;
   private aconf: AppConfiguration;
+  private MAX_LIMIT = 5000;
 
   private constructor() {
 
@@ -69,7 +70,7 @@ export class SciCatBEConnector {
       filter: JSON.stringify({
         where: { status: "registered" },
         fields: { thumbnail: 0 },
-        limits: { limit: totalRecords },
+        limits: { limit: Math.min(totalRecords?.count ?? 100, this.MAX_LIMIT) },
       }),
     };
     return this.publishedDataApi.publishedDataControllerFindAllV3(filters);
@@ -86,7 +87,7 @@ export class SciCatBEConnector {
       filter: JSON.stringify({
         where: { status: "registered" },
         fields: { thumbnail: 0 },
-        limits: { limit: totalRecords },
+        limits: { limit: Math.min(totalRecords?.count ?? 100, this.MAX_LIMIT) },
       }),
     };
     return this.publishedDataApi.publishedDataControllerFindAllV3(filters)

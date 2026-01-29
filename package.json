@@ -17,7 +17,7 @@
     "test": "node build.js && mocha --exit"
   },
   "dependencies": {
-    "@scicatproject/scicat-sdk-ts-fetch": "^4.17.0",
+    "@scicatproject/scicat-sdk-ts-fetch": "^4.27.0",
     "@types/node": "^20.17.30",
     "bluebird": "^3.7.2",
     "body-parser": "^1.20.3",
